@@ -1,0 +1,128 @@
+﻿@model LearningWordsOnline.ViewModels.RankingViewModel
+@{
+    ViewData["Title"] = "Ranking";
+    ViewData["ShowMenuBar"] = true;
+
+}
+
+<style>
+    .player-name{
+        text-decoration: none;
+        color: black;
+    }
+
+    .player-name:hover {
+        text-decoration: underline;
+            color: #ff5733;
+    }
+</style>
+
+<div class="container my-4 flex-grow-1">
+    <div class="text-center mb-4">
+        <h1 class="page-title">@ViewData["Title"]</h1>
+    </div>
+    <div class="d-flex flex-column justify-content-center align-items-center gap-4">
+        <!-- リーダーボード -->
+        <button type="button" class="col-9 col-md-6 col-lg-4 text-decoration-none btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#leaderboardModal">
+            <div class="p-3 text-center border rounded shadow-sm page-item">
+                <h2 class="item-title">Leaderboard</h2>
+                <div class="description">
+                    ランクマッチの上位プレイヤーを表示
+                </div>
+            </div>
+        </button>
+        <!-- カテゴリー -->
+        <button type="button" class="col-9 col-md-6 col-lg-4 text-decoration-none btn btn-link p-0">
+            <div class="p-3 text-center border rounded shadow-sm page-item">
+                <h2 class="item-title">Daily Ranking</h2>
+                <div class="description">
+                    昨日のお題の結果を表示
+                </div>
+            </div>
+        </button>
+    </div>
+</div>
+
+<!-- モーダル -->
+<div class="modal fade" id="leaderboardModal" tabindex="-1" aria-labelledby="leaderboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="leaderboardModalLabel">Leaderboard</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+			<div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                <div class="my-own-position text-white px-4 py-3 rounded mb-3 d-flex align-items-center justify-content-between" style="background-color: #FF6347;">
+                    <h2>Your Position</h2>
+                    <!-- 順位の表示 -->
+                    <div class="d-flex align-items-center">
+                        <div class="my-position-rank" style="font-size: 2.3rem; font-weight: bold; color: #FFD700; margin-right: 5px;">
+                            @if (Model.MyOwnPosition is not null)
+                            {
+                                @GetPositionWithSuffix(Model.MyOwnPosition.Position.ToString())
+                            }
+                        </div>
+
+@*                         <!-- アイコンの表示 -->
+                        <img src="@Url.Content(ViewBag.Ranking.MyOwnPosition.AppUser.Profile.Icon?.Url ?? "/images/icons/gear.png")"
+                             class="rounded-circle" alt="FIcon"
+                             style="width: 45px; height: 45px; object-fit: contain; margin-right: 20px; border: 2px solid #FFD700; cursor:pointer;"
+                             onclick="window.location='/Profile/@ViewBag.Ranking.MyOwnPosition.AppUser.Id'">
+
+                        <!-- ユーザー名の表示 -->
+                        <div>
+                            <span class="fw-bold lead" style="font-size: 1.5rem; color: #FFF;">@ViewBag.Ranking.MyOwnPosition.AppUser.Profile.DisplayName</span>
+                        </div> *@
+                    </div>
+
+                    @* <!-- ポイントの表示 -->
+                    <div>
+                        <p class="mb-0" style="font-size: 1.2rem; font-weight: bold; color: #6c757d;">@ViewBag.Ranking.MyOwnPosition.AppUser.Profile.RankPoint pts</p>
+                    </div> *@
+                </div>
+                <ul class="list-group">
+                    @foreach (var item in Model.Leaderboard)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <div class="position-rank" style="font-size: 2rem; font-weight: bold; color: #FF6347; min-width: 45px;">
+                                    @item.Position
+                                </div>
+                                <img src="@Url.Content(item.AppUser.Profile.Icon?.Url ?? "/images/icons/gear.png")"
+                                     class="rounded-circle" alt="FIcon"
+                                     style="width: 45px; height: 45px; object-fit: contain; margin-right: 15px; cursor:pointer;"
+                                     onclick="window.location='/Profile/@item.AppUser.Id'">
+                                <div>
+                                    @* <span class="fw-bold lead">@item.AppUser.Profile.DisplayName</span> *@
+                                    <a class="fw-bold lead me-1 player-name" asp-controller="Profile" asp-action="@item.AppUser.Id">@item.AppUser.Profile.DisplayName</a>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <p class="mb-0" style="font-size: 1.2rem; font-weight: bold; color: #6c757d;">@item.AppUser.Profile.RankPoint pts</p>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public string GetPositionWithSuffix(string position)
+    {
+        if (position.EndsWith("1") && !position.EndsWith("11"))
+            return position + "st";
+        else if (position.EndsWith("2") && !position.EndsWith("12"))
+            return position + "nd";
+        else if (position.EndsWith("3") && !position.EndsWith("13"))
+            return position + "rd";
+        else
+            return position + "th";
+    }
+}
+
+<link rel="stylesheet" href="~/css/mainPage.css" asp-append-version="true" />

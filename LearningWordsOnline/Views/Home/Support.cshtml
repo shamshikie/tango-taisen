@@ -1,0 +1,86 @@
+﻿@{
+    ViewData["Title"] = "Support";
+    ViewData["ShowMenuBar"] = true;
+}
+<style>
+    .main-container {
+        margin: 0 auto 0 auto;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 900px
+    }
+
+    .title h1 {
+        font-size: 2.2rem;
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            height: 150px;
+        }
+
+            .form-group input:focus,
+            .form-group textarea:focus {
+                border-color: #0056b3;
+                outline: none;
+            }
+
+
+</style>
+<div class="text-center mb-4 mt-4">
+    <h1 class="page-title">お問い合わせ</h1>
+	<div class="text-center fs-5 mt-2 px-4 fw-bold">ご質問やご意見があれば、以下のフォームに記入して送信してください。</div>
+</div>
+
+<div class="main-container mb-5">
+
+    <form action="#" method="POST">
+        <div class="form-group">
+            <label for="name">お名前</label>
+            <input type="text" id="name" name="name" required placeholder="お名前を入力してください">
+        </div>
+
+        <div class="form-group">
+            <label for="email">メールアドレス</label>
+            <input type="email" id="email" name="email" required placeholder="メールアドレスを入力してください">
+        </div>
+
+        <div class="form-group">
+            <label for="message">メッセージ</label>
+            <textarea id="message" name="message" required placeholder="メッセージを入力してください"></textarea>
+        </div>
+
+        <button class="btn btn-brand w-100"type="button">送信</button>
+    </form>
+
+</div>
+<footer>
+    <p>&copy; 2025 Example Company. All Rights Reserved.</p>
+</footer>
+
+<link rel="stylesheet" href="~/css/mainPage.css" asp-append-version="true" />

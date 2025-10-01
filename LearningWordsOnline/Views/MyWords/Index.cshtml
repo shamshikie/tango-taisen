@@ -1,0 +1,297 @@
+﻿@model IEnumerable<LearningWordsOnline.ViewModels.MyWordsViewModel>
+
+@{
+    ViewData["Title"] = "My単語帳";
+    ViewData["ShowMenuBar"] = true;
+    int currentPage = ViewBag.CurrentPage; // 現在のページ
+    int totalPages = ViewBag.TotalPages;  // 全ページ数
+    int range = 2; // 表示範囲（前後2ページ分）
+}
+
+<style>
+    .my-words-container {
+    display: grid;
+    grid-gap: 15px 0;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .word-card {
+    margin: 0 auto 0 auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px 16px 32px 16px;
+    width: 190px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    position: relative;
+    }
+
+    .word-card:hover {
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .word-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    word-wrap: break-word;
+    }
+
+    .word-details ul {
+    padding-left: 20px;
+    margin-bottom: 2px;
+    padding-left: 0;
+    }
+
+    .word-details li {
+    list-style: none;
+    }
+
+    .badge-area {
+    position: absolute;
+    bottom: 10px; /* Adjust based on the desired space from the bottom */
+    width: 100%;
+    }
+    .part-of-speech{
+    padding: 0 2px 0 2px;
+    background-color: aliceblue;
+    }
+
+    .search-box {
+    position: relative;
+    display: flex;
+    width: 70%;
+    max-width: 500px;
+    align-items: center;
+    }
+
+    .search-box input {
+    width: 100%;
+    padding-right: 40px;
+    }
+
+    .clear-button {
+    position: absolute;
+    right: 10px;
+    padding: 0 0 6px 0;
+    font-size: 2rem;
+    /* cursor: pointer; */
+    color: gray;
+    text-decoration: none;
+    }
+    .badge-level{
+    /* background-color: #ff5733; */
+    }
+
+
+
+</style>
+<div class="container mt-4 flex-grow-1">
+    <div class="text-center mb-4">
+        <h1 class="page-title">@ViewData["Title"]</h1>
+    </div>
+
+    <!-- 検索フォーム -->
+    <form method="get" action="@Url.Action("Index")" class="mb-4">
+        <!-- タブ型フィルター -->
+        <ul class="nav nav-tabs justify-content-center mb-3">
+            <li class="nav-item">
+                <a class="nav-link answered-filter @(ViewBag.AnsweredFilter == "all" ? "active" : "")" href="@Url.Action("Index", new { answeredFilter = "all", searchQuery = ViewBag.SearchQuery })" data-answered-filter="all">All</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link answered-filter @(ViewBag.AnsweredFilter == "answered" ? "active" : "")" href="@Url.Action("Index", new { answeredFilter = "answered", searchQuery = ViewBag.SearchQuery })" data-answered-filter="answered">Answered</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link answered-filter @(ViewBag.AnsweredFilter == "unanswered" ? "active" : "")" href="@Url.Action("Index", new { answeredFilter = "unanswered", searchQuery = ViewBag.SearchQuery })" data-answered-filter="unanswered">Unanswered</a>
+            </li>
+        </ul>
+        <!-- 隠しフィールドで現在のタブ状態を保持 -->
+        <input type="hidden" name="answeredFilter" id="answeredFilterInput" value="@ViewBag.AnsweredFilter" />
+        <div class="input-group mb-2 d-flex justify-content-center">
+            <div class="search-box">
+                <input type="text" id="searchInput" class="form-control" name="searchQuery" value="@ViewBag.SearchQuery" placeholder="検索 (単語や意味)">
+                <a class="clear-button" id="clearButton" asp-route-answeredFilter="@ViewBag.AnsweredFilter" style="cursor: default;">&times;</a>
+            </div>
+            <button class="btn btn-brand rounded" type="submit">Search</button>
+        </div>
+    </form>
+
+    <div id="word-list" class="my-words-container">
+        @foreach (var word in Model)
+        {
+            <div class="word-card" data-bs-toggle="modal" data-bs-target="#detailsModal-@word.WordId" role="button">
+                <div class="word-header" >
+                    <h3 class="mb-1">@word.Spelling</h3>
+                </div>
+                <div class="word-details">
+                    <ul>
+                        @foreach (var definition in word.DefinitionViewModels.Take(3)) //上位3つまで表示
+                        {
+                            <li>
+                                <strong class="part-of-speech border rounded">@definition.PartOfSpeech</strong> @definition.Meaning
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="badge-area">
+                    @if (word.Level is not null)
+                    {
+                        <span class="badge badge-level bg-primary">Level: @word.Level</span>
+                    }
+                    @if (word.CorrectAnswerRate.HasValue)
+                    {
+                        <span class="badge @ColorizeAnswerRateBadge(word.CorrectAnswerRate.Value)">正答率: @(word.CorrectAnswerRate)%</span>
+                    }
+                </div>
+            </div>
+
+            <!-- モーダル -->
+            <div class="modal fade" id="detailsModal-@word.WordId" tabindex="-1" aria-labelledby="modalLabel-@word.WordId">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalLabel-@word.WordId">@word.Spelling</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <ol>
+                                @foreach (var definition in word.DefinitionViewModels)
+                                {
+                                    <li class="mb-3">
+                                        <div class="mb-1">
+                                            <strong class="part-of-speech border rounded">@definition.PartOfSpeech</strong>
+                                            @definition.Meaning
+                                        </div>
+                                        @if (definition.AppUserDefinition is not null)
+                                        {
+                                            <div>
+                                                <strong>正答/出題:</strong>
+                                                @(@definition.AppUserDefinition?.Count - definition.AppUserDefinition?.WrongCount) / @definition.AppUserDefinition?.Count
+                                            </div>
+                                        }
+                                        @* <p><strong>最終回答日:</strong> @definition.AppUserDefinition?.AnsweredAt.ToString("yyyy/MM/dd")</p> *@
+                                    </li>
+                                }
+                            </ol>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (!Model.Any()) //単語がないとき
+        {
+            <div class="word-card" style="cursor: default; width: 90%;">
+                <div class="word-header">
+                    <h3 class="mb-1">Not Found</h3>
+                </div>
+                <div class="word-details">
+                    <ul>
+                        <li>
+                            <strong class="part-of-speech border rounded">N/A</strong> 別の語句で検索し直してください
+                        </li>
+                    </ul>
+                </div>
+                <div class="badge-area">
+                    <span class="badge bg-primary">Level: 99</span>
+                    <span class="badge bg-danger">正答率: 0%</span>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="text-center my-4">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <!-- 最初のページ -->
+                @if (currentPage - range >= range)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-route-page="1" asp-route-answeredFilter="@ViewBag.AnsweredFilter" asp-route-searchQuery="@ViewBag.SearchQuery">
+                            1
+                        </a>
+                    </li>
+                    @if (currentPage - range > range)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                }
+
+                <!-- 現在のページ付近のページ番号 -->
+                @for (var index = currentPage - range; index <= currentPage + range; index++)
+                {
+                    if (index < 1 || index > totalPages)
+                    {
+                        continue;
+                    }
+                    <li class="page-item @(index == currentPage ? "active" : "")">
+                        @if (index != currentPage)
+                        {
+                            <a class="page-link" asp-route-page="@index" asp-route-answeredFilter="@ViewBag.AnsweredFilter" asp-route-searchQuery="@ViewBag.SearchQuery">
+                            @index
+                            </a>
+                        }
+                        else
+                        {
+							<button disabled class="page-link">
+								@index
+							</button>
+                        }
+                        
+                    </li>
+                }
+
+                <!-- 最後のページ -->
+                @if ((currentPage + range) < totalPages)
+                {
+                    @if (totalPages - (currentPage + range) >= range)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                    <li class="page-item">
+                        <a class="page-link" asp-route-page="@totalPages" asp-route-answeredFilter="@ViewBag.AnsweredFilter" asp-route-searchQuery="@ViewBag.SearchQuery">
+                            @totalPages
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>
+
+@functions{
+    private string ColorizeAnswerRateBadge(int correctAnswerRate)
+        =>   correctAnswerRate >= 90 ? "bg-success"
+           : correctAnswerRate >= 60 ? "bg-warning"
+           // : correctAnswerRate >= 30 ? "bg-warning"
+           : "bg-secondary";
+}
+<link rel="stylesheet" href="~/css/mainPage.css" asp-append-version="true" />
+ <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.querySelector('input[name="searchQuery"]');
+        const tabs = document.querySelectorAll('.answered-filter');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault(); // デフォルトのリンク動作をキャンセル
+
+                // 現在の URL からクエリ以外の部分を取得
+                const basePath = window.location.pathname;
+
+                // 新しいクエリパラメータを作成
+                const filter = tab.dataset.answeredFilter; // タブの data-answeredFilter 属性の値を取得
+                const searchQuery = searchInput.value; // 検索語句の値を取得
+                const newQuery = `?answeredFilter=${encodeURIComponent(filter)}&searchQuery=${encodeURIComponent(searchQuery)}`;
+
+                // 新しい URL を構築
+                const newUrl = `${basePath}${newQuery}`;
+
+                // ページを新しい URL で移動
+                window.location.href = newUrl;
+            });
+        });
+
+    });
+</script>

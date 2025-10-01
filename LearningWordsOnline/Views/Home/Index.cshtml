@@ -1,0 +1,93 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+<style>
+    .hero-section {
+        /* background: #96cdca; */
+        color: black;
+    }
+
+        .hero-section .highlight {
+            color: #174b79;
+        }
+
+        .hero-section .btn-warning {
+            color: #212529;
+        }
+
+        .hero-section p.small a {
+            border-bottom: 1px solid transparent;
+            transition: border-bottom 0.2s;
+        }
+
+            .hero-section p.small a:hover {
+                border-bottom: 1px solid black;
+            }
+    .brand-title{
+        color: #ff5733;
+    }
+
+    #gameCarousel {
+        max-width: 800px;
+        width: 90%;
+    }
+
+    .carousel-inner {
+        aspect-ratio: 16/9;
+        overflow: hidden;
+        border: solid #ff5733 0.1rem;
+    }
+
+    .carousel-item {
+        height: 100%;
+    }
+
+    .carousel-item img {
+        height: 100%;
+        object-fit: cover;
+    }
+</style>
+<div class="hero-section text-center pt-5 mx-2 d-flex flex-column justify-content-center align-items-center">
+    <h1 class="brand-title display-4 fw-bold mb-4">Wordify</h1>
+    <h1 class="display-5 fw-bold mb-4">
+        競って学べる<br />
+        <span class="highlight">対戦型英単語クイズアプリ</span>
+    </h1>
+    <p class="lead mb-4">友達やライバルと楽しく学べる、白熱のクイズバトルを体験しよう！</p>
+    <a class="btn btn-lg fw-bold px-4 mb-3 btn-brand" asp-area="Identity" asp-page="/Account/Register">
+        今すぐプレイ
+    </a>
+    <p class="mt-2">
+        アカウントをお持ちの方は
+        <a class="text-brand fw-bold" asp-area="Identity" asp-page="/Account/Login">こちら</a>
+    </p>
+</div>
+<!-- ゲーム画面のプレビュー -->
+<div id="gameCarousel" class="carousel slide d-flex flex-column justify-content-center align-items-center mt-5 mx-auto mb-5" data-bs-ride="carousel">
+    @* <h2 class="text-center mb-4">デモ画面</h2> *@
+	<div class="carousel-inner rounded-3 shadow-lg bg-light p-4">
+        <div class="carousel-item active">
+            <img src="~/images/demo/MyWordbook.png" class="d-block w-100" alt="ゲームプレイ画像1">
+        </div>
+        <div class="carousel-item">
+            <img src="~/images/demo/Leaderboard.png" class="d-block w-100" alt="ゲームプレイ画像2">
+        </div>
+        <div class="carousel-item">
+            <img src="~/images/demo/GameScreen.png" class="d-block w-100" alt="ゲームプレイ画像3">
+        </div>
+        <div class="carousel-item">
+            <img src="~/images/demo/Friend.png" class="d-block w-100" alt="ゲームプレイ画像4">
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#gameCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#gameCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>
+<footer>
+    <p>&copy; 2025 Example Company. All Rights Reserved.</p>
+</footer>

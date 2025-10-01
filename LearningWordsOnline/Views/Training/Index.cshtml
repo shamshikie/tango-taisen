@@ -1,0 +1,212 @@
+﻿@model IEnumerable<LearningWordsOnline.Models.Category>
+@{
+    ViewData["Title"] = "Training";
+    ViewData["ShowMenuBar"] = true;
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissable">
+        @TempData["ErrorMessage"]
+    </div>
+}
+<div class="container my-4 flex-grow-1">
+    <div class="text-center mb-4">
+        <h1 class="page-title">@ViewData["Title"]</h1>
+    </div>
+    <div class="d-flex flex-column justify-content-center align-items-center gap-4">
+        <!-- 苦手単語 -->
+        <button type="button" class="btn col-9 col-md-6 col-lg-4 text-decoration-none p-0" data-bs-toggle="modal" data-bs-target="#weaknessModal">
+            <div class="p-3 text-center border rounded shadow-sm page-item">
+                <h2 class="item-title">Weakness</h2>
+                <div class="description">
+                    <!-- Content -->
+                    間違えやすい単語を優先して出題
+                </div>
+            </div>
+        </button>
+        <!-- カテゴリー -->
+        <button type="button" class="btn col-9 col-md-6 col-lg-4 text-decoration-none p-0" data-bs-toggle="modal" data-bs-target="#categoryModal">
+            <div class="p-3 text-center border rounded shadow-sm page-item">
+                <h2 class="item-title">Category</h2>
+                <div class="description">
+                    <!-- Content -->
+                    資格、場面を選択
+                </div>
+            </div>
+        </button>
+        <!-- レベル -->
+        <button type="button" class="btn col-9 col-md-6 col-lg-4 text-decoration-none p-0" data-bs-toggle="modal" data-bs-target="#levelModal">
+            <div class="p-3 text-center border rounded shadow-sm page-item">
+                <h2 class="item-title">Level</h2>
+                <div class="description">
+                    <!-- Content -->
+                    単語レベルを指定して出題
+                </div>
+            </div>
+        </button>
+    </div>
+</div>
+<!-- Modal Weakness-->
+<div class="modal fade" id="weaknessModal" tabindex="-1" aria-labelledby="weaknessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="weaknessModalLabel">Weakness</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="Play" method="post" id="form-weakness">
+                    <input type="hidden" name="trainingMode" value="Weakness"/>
+                    @*TODO: 言語選択 *@
+                    <input type="hidden" name="languageId" value="1" />
+                    <!-- ボリュームバー -->
+                    <div class="form-group mb-1">
+                        <label for="volume-weak" class="form-label">問題数</label>
+                        <input type="range" id="volume-weak" name="questionCount" class="form-range" min="1" max="50" value="10" step="1" oninput="updateVolumeValue(this.value, 'weakness')" />
+                        <div class="text-center mt-2">
+                            <span id="volume-value-weakness">10</span>問
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="form-weakness" class="btn btn-brand">Start</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Category-->
+<div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="categoryModalLabel">Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="Play" method="post" id="form-category">
+                    <input type="hidden" name="trainingMode" value="Category" />
+                    <input type="hidden" name="languageId" value="1" />
+                    <!-- 親カテゴリ -->
+                    <div class="form-group mb-3">
+                        <!-- 親カテゴリ -->
+                        <label for="parentDropdown" class="form-label">親カテゴリ</label>
+                        <select id="parentDropdown" name="parentCategoryId" class="form-select" required>
+                            <option value="" disabled selected>親カテゴリを選択してください</option>
+                            @foreach (var parentCategory in Model)
+                            {
+                                <option value="@parentCategory.Id">@parentCategory.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <!-- 子カテゴリ -->
+                        <label for="childDropdown" class="form-label">子カテゴリ</label>
+                        <select id="childDropdown" name="childCategoryId" class="form-select" required disabled>
+                            <option value="" disabled selected>親カテゴリを選択してください</option>
+                        </select>
+                    </div>
+                    <!-- ボリュームバー -->
+                    <div class="form-group mb-1">
+                        <label for="volume-category" class="form-label">問題数</label>
+                        <input type="range" id="volume-category" name="questionCount" class="form-range" min="1" max="50" value="10" step="1" oninput="updateVolumeValue(this.value, 'category')" />
+                        <div class="text-center mt-2">
+                            <span id="volume-value-category">10</span>問
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="form-category" class="btn btn-brand">Start</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Level-->
+<div class="modal fade" id="levelModal" tabindex="-1" aria-labelledby="levelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="levelModalLabel">Level</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="Play" method="post" id="form-level">
+                    <input type="hidden" name="trainingMode" value="Level" />
+                    <input type="hidden" name="languageId" value="1" />
+                    <!-- ボリュームバー -->
+                    <div class="form-group mb-3">
+                        <label for="volume-wordLevel" class="form-label">単語レベル</label>
+                        <input type="range" id="volume-wordLevel" name="questionLevel" class="form-range" min="1" max="@ViewBag.MaxLevel" value="5" step="1" oninput="updateVolumeValue(this.value, 'wordLevel')" />
+                        <div class="text-center mt-2">
+                            Level. <span id="volume-value-wordLevel">5</span>
+                        </div>
+                    </div>
+                    <!-- ボリュームバー -->
+                    <div class="form-group mb-1">
+                        <label for="volume-level" class="form-label">問題数</label>
+                        <input type="range" id="volume-level" name="questionCount" class="form-range" min="1" max="50" value="10" step="1" oninput="updateVolumeValue(this.value, 'level')" />
+                        <div class="text-center mt-2">
+                            <span id="volume-value-level">10</span>問
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="form-level" class="btn btn-brand">Start</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="~/css/mainPage.css" asp-append-version="true" />
+
+<!-- 子カテゴリデータをスクリプトで埋め込む -->
+<script>
+    const childCategoriesData = @Html.Raw(Json.Serialize(Model.Where(parent =>  parent.ChildCategories.Any()) 
+    // 子カテゴリが存在する場合のみフィルタ
+    .ToDictionary(
+        parent => parent.Id,
+        parent => parent.ChildCategories.Select(child => new { id = child.Id, name = child.Name })
+    )))
+</script>
+
+<script>
+    function updateVolumeValue(value, volumeValueId) {
+        document.getElementById(`volume-value-${volumeValueId}`).textContent = value;
+    }
+
+     document.addEventListener("DOMContentLoaded", function () {
+        const parentDropdown = document.getElementById("parentDropdown");
+        const childDropdown = document.getElementById("childDropdown");
+
+        parentDropdown.addEventListener("change", function () {
+            const parentId = this.value;
+
+            // 親カテゴリが選択された場合のみ子カテゴリを有効化かつ子カテゴリが存在
+            if (parentId && childCategoriesData[parentId] && childCategoriesData[parentId].length > 0) {
+                // 子カテゴリを初期化
+                childDropdown.innerHTML = '<option value="" disabled selected>子カテゴリを選択してください</option>';
+                childDropdown.disabled = false;
+
+                // 子カテゴリを追加
+                childCategoriesData[parentId].forEach(category => {
+                    const option = document.createElement("option");
+                    option.value = category.id;
+                    option.textContent = category.name;
+                    childDropdown.appendChild(option);
+                });
+            } else {
+                // 子カテゴリが存在しない場合
+                childDropdown.innerHTML = '<option value="" disabled selected>-</option>';
+                childDropdown.disabled = true;
+            }
+        });
+    });
+</script>

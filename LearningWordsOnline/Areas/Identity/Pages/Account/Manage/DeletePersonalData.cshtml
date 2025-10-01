@@ -1,0 +1,36 @@
+﻿@page
+@model DeletePersonalDataModel
+@{
+    ViewData["Title"] = "アカウントの削除";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+
+<div class="alert alert-danger border border-danger rounded p-4">
+    <h2 class="text-danger fw-bold">⚠ アカウント削除の警告</h2>
+    <p>あなたのアカウントには、当社に提供した個人情報が含まれています。このページではそれらを削除することができます。</p>
+    <p class="fw-bold">
+        🚨 <strong>このデータを削除すると、アカウントは永久に削除され、復元することはできません。</strong>
+    </p>
+</div>
+
+<div>
+    <form id="delete-user" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        @if (Model.RequirePassword)
+        {
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="パスワードを入力してください。" />
+                <label asp-for="Input.Password" class="form-label"></label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+        }
+		<div class="text-center"> 
+            <button class="btn btn-danger btn-lg px-4 fw-bold" type="submit">アカウントを削除</button>
+            </div>
+       
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

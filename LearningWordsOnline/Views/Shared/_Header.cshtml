@@ -1,0 +1,59 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<style>
+    a.navbar-brand {
+        white-space: normal;
+        text-align: center;
+        word-break: break-all;
+        color: #ff5733;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    a.navbar-brand:hover {
+            color: #e54e2e;
+    }
+
+    .top-bar{
+        white-space: nowrap;
+    }
+    .nav-link {
+        white-space: nowrap;
+        display: inline-block;
+    }
+
+    .top-bar-item:hover {
+            background: #ececec;
+        }
+
+    .d-flex.align-items-center {
+        display: flex;
+        align-items: center;
+    }
+
+</style>
+<div class="container-fluid border rounded pb-2">
+    <!-- ヘッダー部分 -->
+    <nav class="navbar navbar-expand-sm navbar-light bg-white">
+        <div class="d-flex w-100 justify-content-between">
+            <a class="navbar-brand ps-2" asp-area="" asp-controller="Home" asp-action="Index">Wordify</a>
+            <div class="d-flex align-items-center">
+                @await Html.PartialAsync("_LoginPartial")
+            </div>
+        </div>
+    </nav>
+
+    <!-- 横スクロール部分 -->
+    <div class="top-bar">
+        <div class="d-flex overflow-auto justify-content-start fw-bold">
+            <a class="nav-link text-dark px-2 top-bar-item rounded" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+            <a class="nav-link text-dark px-2 top-bar-item rounded" asp-area="" asp-controller="Home" asp-action="HowTo">How to Play</a>
+            <a class="nav-link text-dark px-2 top-bar-item rounded" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <a class="nav-link text-dark px-2 top-bar-item rounded" asp-area="" asp-controller="Home" asp-action="Support">Support</a>
+        </div>
+    </div>
+</div>
+
+

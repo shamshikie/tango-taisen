@@ -1,0 +1,58 @@
+﻿@model AppUser
+@using LearningWordsOnline.Helpers
+
+@{
+	ViewData["Title"] = "MyPage";
+	ViewData["ShowMenuBar"] = true;
+}
+
+<div class="profile-container">
+	<div class="profile-main">
+		<div class="profile-icon">
+				<img src="@Url.Content(Model.Profile.Icon?.Url ?? "/images/icons/gear.png")" class="img-fluid rounded-circle" alt="Profile Icon" />
+		</div>
+		<div class="profile-info">
+			<h1>@Model.Profile.DisplayName</h1>
+			<p>username: @Model.UserName</p>
+			@* <p>Joined @Model.CreatedAt</p> *@
+			<p>Joined <span id="joinedDate" data-created-at="@Model.CreatedAt.ToString("yyyy-MM-ddTHH:mm")Z"></span></p>
+			<div class="rank">Rank : @RankHelper.GetRank(Model.Profile.RankPoint) (@Model.Profile.RankPoint pts)</div>
+		</div>
+	</div>
+	<div class="profile-action">
+		<a asp-action="Edit" class="edit-profile-btn btn btn-outline-brand">
+			<span class="material-symbols-outlined">edit</span>
+		</a>
+	</div>
+
+	<div class="profile-bio">
+		@Model.Profile.Bio
+	</div>
+</div>
+
+<div class="content-container">
+	<div class="content-title"><h2>Activity</h2></div>
+	<div class="content-main">
+		<ul>
+			<li>Learning 3 days in a row</li>
+			<li>Ranked #120 in the leaderboard</li>
+		</ul>
+	</div>
+</div>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+	const joinedDateElement = document.getElementById('joinedDate');
+	if (joinedDateElement){
+		const createdAt = joinedDateElement.getAttribute('data-created-at'); // UTC日時を取得
+
+		// 日時文字列を Date オブジェクトに変換
+		const date = new Date(createdAt);
+
+		// ローカルの日時形式に変換して表示
+		joinedDateElement.textContent = `${date.toLocaleDateString()}`;
+	}
+});
+</script>
+
+<link rel="stylesheet" href="~/css/profile.css" asp-append-version="true" />

@@ -1,0 +1,87 @@
+﻿.menu-item-description {
+    font-size: 0.7em;
+}
+
+#main-menu {
+    position: sticky;
+    bottom: 0;
+    background-color: #333;
+    color: white;
+    display: flex; /* フレックスボックスでリンクを横並びに */
+    justify-content: space-around; /* 均等に配置 */
+    align-items: center; /* 縦方向の中央揃え */
+    padding: 2px 1px 2px 1px;
+    z-index: 100;
+}
+
+    #main-menu .menu-item {
+        display: flex; /* フレックスボックスでアイコンとテキストを縦並びに */
+        flex-direction: column; /* 縦方向に配置 */
+        align-items: center; /* 中央揃え */
+        font-size: 14px;
+        min-width: 20%;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 10px 0;
+        color: #333;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+        #main-menu .menu-item:hover {
+            color: #ff5733;
+        }
+
+        #main-menu .menu-item span {
+            margin-bottom: 4px; /* アイコンとテキストの間に余白を追加 */
+        }
+
+    #main-menu .battle-link {
+        padding: 4px 0px 2px 0px;
+        color: #fff;
+        width: 20%;
+        background-color: #ff5733;
+        border-radius: 50px;
+        font-weight: bold; 
+        transition: all 0.3s ease;
+    }
+
+        #main-menu .battle-link:hover {
+            color: black;
+            background-color: #bc8f8f; 
+            border-radius: 50px; 
+        }
+
+        #main-menu .battle-link span {
+            font-size: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        #main-menu .battle-link:hover span {
+            transform: rotate(45deg); 
+        }
+/* Media query for smaller screens */
+@media (max-height: 500px) {
+    #main-menu .menu-item {
+        font-size: 0px;
+    }
+
+    #main-menu .battle-link {
+        padding: 4px 0px 4px 0px;
+        color: #fff;
+        background-color: #ff5733;
+        border-radius: 50px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+}
+
+@media (max-width: 500px) {
+    #main-menu .menu-item {
+        font-size: 0.8rem;
+    }
+
+    #main-menu .battle-link {
+        width: 20%;
+        padding: 4px 1px 4px 1px;
+    }
+}

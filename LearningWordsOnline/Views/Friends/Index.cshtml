@@ -1,0 +1,220 @@
+﻿@model IEnumerable<LearningWordsOnline.ViewModels.FriendViewModel>
+@using LearningWordsOnline.Helpers
+
+@{
+    ViewData["Title"] = "Friend";
+    ViewData["ShowMenuBar"] = true;
+    int friendRequestCount = ViewBag.FriendRequestCount;
+}
+
+<style>    
+    .friend-item{
+        /* max-width: 800px; */
+    }
+
+    .friend-info .rank {
+        background: #ff5733;
+        color: white;
+        border-radius: 25px;
+        display: inline-block;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+    
+    .active-icon{
+        width: 10px;
+        height: 10px;
+        display: inline-block;
+    }
+</style>
+
+<div class="container my-4 flex-grow-1">
+    <div class="text-center mb-4">
+        <h1 class="page-title">@ViewData["Title"]</h1>
+    </div>
+	<div class="text-center mb-2 d-flex flex-row-reverse">
+		<a asp-action="Index" asp-controller="FriendRequests" class="text-decoration-none">
+            <div class="btn btn-outline-brand text-center position-relative">
+				<i class="material-symbols-outlined" style="vertical-align: middle; line-height: 1;">mail</i> Friend Requests
+				@if (friendRequestCount > 0)
+                {
+                    <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle">
+                        @friendRequestCount
+                    </span>
+                }
+                else if (friendRequestCount > 99)
+                {
+                    <span class="badge rounded-pill bg-danger position-absolute top-0 start-95 translate-middle">
+                        99+
+                    </span>
+                }
+			</div>
+		</a>
+    </div>
+    @* <div id="popupMessage" class="alert alert-info" role="alert" style="display:none;"></div> *@
+    <ul class="list-group">
+        @foreach (var item in Model.OrderBy(item => item.IsActive))
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center friend-item">
+                <div class="d-flex gap-2 align-items-center">
+                    <img src="@Url.Content(item.FriendUser.Profile.Icon?.Url ?? "/images/icons/gear.png")" class="rounded-circle" alt="Friend Icon" style="width: 50px; height: 50px; object-fit: contain; margin-right: 15px; cursor:pointer;" onclick="window.location='/Profile/@item.FriendUser.Id'" />
+                    <div class="friend-info">
+                        <div class="mb-1">
+							<a class="fw-bold lead me-1" asp-controller="Profile" asp-action="@item.FriendUser.Id">@item.FriendUser.Profile.DisplayName</a>
+                            @if (item.IsActive)
+                            {
+                                <span class="rounded-circle active-icon me-1" style=" background-color: #62ce3b;">
+                                </span><span class="fw-bold">Active</span>
+                            }
+                            else 
+                            {
+                                <span class="rounded-circle active-icon me-1" style="background-color: #a7a9ae;">
+                                </span><span class="fw-bold">Inactive</span>
+                            }
+                            
+                        </div>
+
+                        <div class="mb-1 badge p-2 px-3 rank"> Rank:  @RankHelper.GetRank(item.FriendUser.Profile.RankPoint) (@item.FriendUser.Profile.RankPoint pts)</div>
+                        <div class="mb-0">
+                            <strong>since. </strong> <span class="createdAt" data-created-at="@item.CreatedAt.ToString("yyyy-MM-ddTHH:mm")Z"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modal-@item.Id" style="min-width: 51px;">Delete</button>
+                <!-- Modal -->
+                <div class="modal fade" id="modal-@item.Id" tabindex="-1" aria-labelledby="modalLabel-@item.FriendUser.Id" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="modalLabel-@item.Id">フレンド削除の確認</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form asp-action="Delete" method="post" id="form-@item.Id">
+                                    <input type="hidden" id="@item.Id" name="Id" value="@item.Id" />
+                                    @* <input type="submit" value="Delete" class="btn btn-danger" /> *@
+									<p class="text-danger fs-5 text-center">本当にこのフレンドを削除しますか？</p>
+									<p class="fw-bold fs-5 text-center"> @item.FriendUser.Profile.DisplayName</p>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" value="Delete" form="form-@item.Id" class="btn btn-danger">Delete (削除)</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    
+            </li>
+        }@* <form asp-action="Delete">
+                        <input type="hidden" asp-for="Id" />
+                        <input type="submit" value="Delete" class="btn btn-danger" /> |
+                    </form> *@
+    </ul>
+        @if (!Model.Any()){
+            <h1 class="mt-2 text-center">No Friends (^ω^)</h1>
+        }
+
+    <!-- ID入力フォームと申請ボタン -->
+    <!-- フローティングボタン -->
+    <button type="button" class="btn btn-brand rounded-circle shadow-lg position-fixed d-flex justify-content-center align-items-center"
+            style="bottom: 20%; right: 8%; width: 50px; height: 50px; z-index: 1;"
+            data-bs-toggle="modal" data-bs-target="#friendRequestModal">
+        <i class="material-symbols-outlined ps-0 pb-1">person_add</i>
+    </button>
+
+    <!-- モーダル -->
+    <div class="modal fade" id="friendRequestModal" tabindex="-1" aria-labelledby="friendRequestModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="friendRequestModalLabel">Send a friend request</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating">
+                        <input type="text" id="friendUserId" class="form-control" placeholder="ユーザーネームを入力">
+                        <label for="friendUserId">ユーザーネーム</label>
+                    </div>
+                    <div id="return-message" class="text-center mt-2"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-brand" id="sendFriendRequest">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="~/css/mainPage.css" asp-append-version="true" />
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const createdAtElements = document.querySelectorAll('.createdAt');
+
+    createdAtElements.forEach(createdAtElement => {
+        const createdAt = createdAtElement.getAttribute('data-created-at'); // UTC日時を取得
+        // 日時文字列を Date オブジェクトに変換
+        const localDate = new Date(createdAt).toLocaleDateString();
+        // ローカルの日時形式に変換して表示
+        createdAtElement.textContent = localDate;
+        });
+    });
+
+    document.getElementById("sendFriendRequest").addEventListener("click", function () {
+        var requestedUsername = document.getElementById("friendUserId").value.trim();
+        const message = document.getElementById('return-message');
+        message.innerText = "";
+        if (!requestedUsername) {
+            message.classList.remove('text-success');
+            message.classList.add('text-danger');
+            message.innerText = "ユーザーネームを入力してください。";
+            return;
+        }
+
+        // フレンド申請を非同期で送信
+        fetch('@Url.Action("Create", "FriendRequests")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+            },
+            body: JSON.stringify(requestedUsername)
+        })
+        .then(response => response.json())
+        .then(data => {
+            const message = document.getElementById('return-message');
+            message.classList.remove('text-danger');
+            message.classList.add('text-success');
+            message.innerText = "フレンド申請を送りました。";
+            // const popupMessage = document.getElementById("popupMessage");
+            if (data.success) {
+                console.log(data.message);
+                // popupMessage.classList.remove("alert-danger");
+                // popupMessage.classList.add("alert-success");
+                // popupMessage.textContent = data.message;
+            } else {
+                console.log(data.message);
+                // popupMessage.classList.remove("alert-success");
+                // popupMessage.classList.add("alert-danger");
+                // popupMessage.textContent = data.message;
+            }
+            // popupMessage.style.display = 'block';
+        })
+        .catch(() => {
+            const message = document.getElementById('return-message');
+            message.classList.add('text-danger');
+            message.innerText = "申請処理中にエラーが発生しました。";
+        });
+    });
+
+    // モーダルが閉じられた際にテキストとメッセージをリセット
+    const friendRequestModal = document.getElementById('friendRequestModal');
+    friendRequestModal.addEventListener('hidden.bs.modal', function () {
+        document.getElementById('friendUserId').value = ''; // テキストボックスをリセット
+        const message = document.getElementById('return-message');
+        message.innerText = ''; // メッセージをリセット
+        message.classList.remove('text-success', 'text-danger'); // クラスもリセット
+    });
+</script>

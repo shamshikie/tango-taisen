@@ -1,0 +1,24 @@
+﻿@page
+@model ResetAuthenticatorModel
+@{
+    ViewData["Title"] = "認証キーのリセット";
+    ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
+}
+
+<partial name="_StatusMessage" for="StatusMessage" />
+<h3 class="mb-4">@ViewData["Title"]</h3>
+<div class="alert alert-warning" role="alert">
+    <p>
+        <span class="glyphicon glyphicon-warning-sign"></span>
+        <strong>認証キーをリセットした場合、再設定するまで認証アプリは動作しません。</strong>
+    </p>
+    <p>
+        このプロセスは、認証アプリを確認するまで2FAを無効にします。
+        認証アプリの設定を完了しないと、アカウントにアクセスできなくなる可能性があります。
+    </p>
+</div>
+<div class="d-flex justify-content-center">
+    <form id="reset-authenticator-form" method="post">
+        <button id="reset-authenticator-button" class="btn btn-danger" type="submit">認証キーをリセットする</button>
+    </form>
+</div>

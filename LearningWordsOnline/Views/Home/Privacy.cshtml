@@ -1,0 +1,160 @@
+﻿@{
+    ViewData["Title"] = "プライバシーポリシー (仮)";
+    ViewData["ShowMenuBar"] = true;
+}
+
+<style>
+    .main-container {
+        position: relative;
+        max-width: 900px;
+        margin: 0 auto 0 auto;
+        background-color: #fff;
+        padding: 50px 10% 20px 10%;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+
+
+    .title h1{
+        font-size: 2.2rem;
+        color: #333;
+    }
+
+    section {
+        margin-bottom: 30px;
+    }
+
+        section h2 {
+            font-size: 1.8rem;
+            color: #ff5733;
+            margin-bottom: 15px;
+        }
+
+        section p {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        section ul {
+            margin-left: 20px;
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+            section ul li {
+                margin-bottom: 8px;
+            }
+
+    .back-to-top {
+        position: fixed;
+        bottom: 70px;
+        right: 20px;
+        margin-left: 85%;
+        padding: 10px 20px;
+        background-color: #ff5733;
+        color: white;
+        border-radius: 50px;
+        border: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        display: flex;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0s 0.3s;
+    }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease;
+        }
+
+        .back-to-top:hover {
+            background-color: #e54e2e;
+        }
+
+    @@media(min-width: 1200px) {
+        .back-to-top{
+            right: 20%;
+        }
+    }
+</style>
+
+
+<div class="main-container pb-5 mb-5">
+<div class="text-center mb-5">
+    <h1 class="page-title">@ViewData["Title"]</h1>
+</div>
+    <section>
+        <h2>1. 収集する情報</h2>
+        <p>当サイトでは、以下の情報を収集することがあります：</p>
+        <ul>
+            <li>名前、メールアドレスなどの個人情報</li>
+            <li>利用者のIPアドレス、ブラウザの種類、アクセス日時などのアクセス情報</li>
+            <li>クッキーを使用して、利用者の訪問履歴や設定情報を収集</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>2. 情報の利用目的</h2>
+        <p>収集した情報は、以下の目的で利用されます：</p>
+        <ul>
+            <li>サービスの提供や運営のため</li>
+            <li>サービスの改善や新機能の開発</li>
+            <li>お問い合わせ対応やサポート業務</li>
+            <li>マーケティングや分析活動</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>3. 情報の第三者提供</h2>
+        <p>収集した情報は、法令に基づく場合を除き、第三者に提供することはありません。</p>
+    </section>
+
+    <section>
+        <h2>4. クッキーについて</h2>
+        <p>当サイトでは、クッキーを使用して、利用者のサイト利用情報を収集しています。クッキーは、ブラウザの設定で無効にすることができますが、無効にした場合、サイトの一部の機能が利用できなくなることがあります。</p>
+    </section>
+
+    <section>
+        <h2>5. セキュリティ</h2>
+        <p>当サイトは、利用者の個人情報を保護するために適切なセキュリティ対策を講じています。ただし、インターネット上での情報送信には完全なセキュリティを保証することはできません。</p>
+    </section>
+
+    <section>
+        <h2>6. プライバシーポリシーの変更</h2>
+        <p>本ポリシーは、法令の改正やサービスの変更に伴い、予告なく変更されることがあります。変更があった場合には、当サイトにてお知らせします。</p>
+    </section>
+
+    <section>
+        <h2>7. お問い合わせ</h2>
+        <p>プライバシーポリシーに関するご質問やご意見がありましたら、以下の連絡先までお問い合わせください：</p>
+        <p>Email: <a href="mailto:support@example.com">support@example.com</a></p>
+    <button id="backToTop" class="back-to-top justify-content-center"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
+    </section>
+</div>
+<br>
+<footer class="pt-2 mt-4 mb-2">
+    <p>&copy; 2025 Example Company. All Rights Reserved.</p>
+</footer>
+<link rel="stylesheet" href="~/css/mainPage.css" asp-append-version="true" />
+<script>
+    const backToTopButton = document.getElementById('backToTop');
+    backToTopButton.addEventListener('click', function () {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    // スクロール時のイベントリスナーを追加
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 200) { // 200px以上スクロールしたら表示
+            backToTopButton.classList.add('show');
+        } else {
+            backToTopButton.classList.remove('show');
+        }
+    });
+
+</script>

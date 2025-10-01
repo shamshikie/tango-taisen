@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "404 Not Found";
+}
+
+<div class="m-3 ">
+    <div class="oops-message text-center">Oops! (^Д^)</div>
+	<div class="er-StatusCode_status">
+		<span class="er-StatusCode_code">404</span>
+		<span class="er-StatusCode_text">Not Found</span>
+	</div>
+	<div class="er-StatusCode_description text-center">
+		お探しのページは一時的にアクセスができない状況にあるか、移動もしくは削除された可能性があります。
+		また、URL、ファイル名にタイプミスがないか再度ご確認ください。
+	</div>
+	<div class="text-center mt-3">
+	    <a asp-action="Index" asp-controller="Home">トップページへ戻る</a>
+    </div>
+</div>
+
+
+<style>
+    .er-StatusCode_status {
+        display: flex;
+        justify-content: center;
+        align-items: baseline;
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+
+    .er-StatusCode_code {
+        font-weight: bold;
+        color: #dc3545;
+        margin-right: 10px;
+    }
+
+    .er-StatusCode_text {
+        color: #6c757d;
+    }
+
+    .oops-message {
+        font-size: 4rem;
+        color: #495057;
+/*         margin-bottom: 30px; */
+    }
+
+    .er-StatusCode_description {
+        font-size: 1rem;
+        color: #6c757d;
+        max-width: 550px;
+        margin: 0 auto;
+    }
+</style>

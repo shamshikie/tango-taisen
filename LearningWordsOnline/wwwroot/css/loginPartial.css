@@ -1,0 +1,118 @@
+﻿.user-actions {
+    gap: 10px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+}
+
+.notifications {
+    font-size: 32px; /* アイコンの大きさをProfileIconのアイコンに合わせる */
+}
+
+.notification-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+}
+/* 通知メニューのスタイル */
+.notification-menu {
+    padding: 3px;
+    display: none;
+    z-index: 100;
+    position: absolute;
+    top: 100%;
+    right: 30px; /* ユーザーメニューから少し左に寄せる */
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 400px;
+}
+
+    /* 通知メニューの表示時 */
+    .notification-menu.show {
+        display: block;
+    }
+
+.notification-badge {
+    transform: translate(-70%, 0%);
+    font-size: 70%;
+    display: none;
+}
+/* アイコンのスタイル */
+#profileIcon {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ff5733; /* 黒枠を追加 */
+    padding: 2px; /* 枠とアイコンの間に余白を追加 */
+    border-radius: 50%; /* アイコンが丸形なので、枠も丸くする */
+    cursor: pointer;
+}
+
+    #profileIcon img {
+        border-radius: 50%;
+    }
+
+/* ユーザーメニューのスタイル */
+.user-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    z-index: 1000;
+}
+
+.menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+/* .menu-itemの基本スタイル */
+.user-menu .menu-item {
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333; /* 通常のテキスト色 */
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+/* リンクのホバー時のスタイル */
+.menu-list .menu-item:hover {
+    color: #ff5733; /* ホバー時のテキスト色を青に */
+}
+
+.menu-item.logout {
+    color: var(--bs-danger);
+}
+
+/* ボタンのスタイルを追加 */
+.user-menu.menu-item button {
+    width: 100%;
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+/* メニューが表示されるとき */
+.user-menu.show {
+    display: block;
+}

@@ -1,0 +1,86 @@
+﻿@model IEnumerable<LearningWordsOnline.Models.FriendRequest>
+
+@{
+    ViewData["Title"] = "Friend Requests";
+    ViewData["ShowMenuBar"] = true;
+}
+<div class="container my-4 flex-grow-1">
+    <div class="text-center mb-4">
+        <h1 class="page-title">@ViewData["Title"]</h1>
+    </div>
+    <div class="text-center mb-2 d-flex flex-row-reverse">
+        <a asp-action="Index" asp-controller="Friends" class="text-decoration-none">
+            <div class="btn btn-outline-brand text-center position-relative">
+                <i class="material-symbols-outlined" style="vertical-align: middle; line-height: 1;">group</i> Friend List
+            </div>
+        </a>
+    </div>
+    <div class="container">
+        <div class="row" id="friend-requests-container">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-6 mb-3 friend-request-card" id="friend-request-@item.Id">
+                    <div class="card">
+                        <div class="card-body d-flex align-items-center">
+                            <!-- プロフィールアイコン -->
+							<img src="@Url.Content(item.Sender.Profile.Icon?.Url ?? "/images/icons/gear.png")" alt="Profile Icon" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: contain; cursor:pointer;" onclick="window.location='/Profile/@item.Sender.Id'" />
+
+                            <!-- 申請情報 -->
+                            <div>
+                                <h5 class="card-title">From: <a class="fw-bold lead" asp-controller="Profile" asp-action="@item.Sender.Profile.Id">@item.Sender.Profile.DisplayName</a></h5>
+                                <p class="card-text">Received at: @item.CreatedAt.ToString("yyyy/MM/dd")</p>
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <button class="btn btn-danger reject-btn" value="@item.Id">Reject</button>
+                            <button class="btn btn-success accept-btn" value="@item.Id">Accept</button>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (!Model.Any())
+            {
+                <h1 class="mt-2 text-center">No Requests (^ω^)</h1>
+            }
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="~/css/mainPage.css" asp-append-version="true" />
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // acceptボタン処理
+        document.querySelectorAll(".accept-btn").forEach(button => {
+            button.addEventListener("click", () => handleRequest(button.value, "Accept"));
+        });
+
+        // Rejectボタン処理
+        document.querySelectorAll(".reject-btn").forEach(button => {
+            button.addEventListener("click", () => handleRequest(button.value, "Reject"));
+        });
+
+        // フレンド申請処理の共通関数
+        function handleRequest(friendRequestId, action) {
+            const options = {
+              method: "POST",
+              url: `/FriendRequests/${action}`,
+              headers: { "Content-Type": "application/json" },
+              data: friendRequestId
+            };
+            axios(options)
+                .then(response => {
+                    if (response.status === 200) {
+                        // 成功した場合、カードを削除
+                        const card = document.getElementById(`friend-request-${friendRequestId}`);
+                        card.remove();
+                    } else {
+                        alert("失敗しました。もう一度やり直してください。");
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert(`An error occurred while processing the request.`);
+                });
+        }
+    });
+</script>

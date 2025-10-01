@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+      <EnableNETAnalyzers>true</EnableNETAnalyzers>
+      <AnalysisLevel>8.0-Minimum</AnalysisLevel>
+  </PropertyGroup>
+</Project>

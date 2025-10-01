@@ -1,0 +1,205 @@
+﻿@using Microsoft.AspNetCore.Identity
+@* @using LearningWordsOnline.Services *@
+@using System.Security.Claims
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@* @inject IAppUserService AppUserService *@
+
+@{
+    // var appUser = AppUserService.GetAppUserAsync(User).Result;
+    var aspNetUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+}
+
+<div class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <div class="user-actions nav-item">
+            <!-- 通知アイコン -->
+            <div id="notification-icon" class="action-item notification-icon position-relative">
+                <!-- バッジ -->
+                <span id="notification-badge" class="notification-badge position-absolute top-0 start-100 badge rounded-pill bg-danger">
+                    <span class="visually-hidden">unread messages</span>
+                </span>
+                <span class="material-symbols-outlined notifications">notifications</span>
+            </div>
+            <!-- 通知リスト -->
+            <div id="notification-menu" class="action-item notification-menu">
+                @* @await Component.InvokeAsync("Notifications", new { aspNetUserId = aspNetUserId }) *@
+				<div class="text-center">
+					<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+					    Loading...
+                    </div>
+            </div>
+            <!-- プロフィールアイコン -->
+            <div class="action-item profile-icon nav-link" id="profileIcon" role="button">
+                @await Component.InvokeAsync("ProfileIcon", new { aspNetUserId = aspNetUserId })
+            </div>
+            <div id="UserMenu" class="user-menu">
+                <ul class="menu-list">
+                    <li>
+                        <a asp-area="" asp-controller="Profile" asp-action="Index" class="menu-item">
+                            <span class="material-symbols-outlined me-2">person</span> マイページ (@User?.Identity?.Name)
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-area="" asp-controller="MyWords" asp-action="Index" class="menu-item">
+                            <span class="material-symbols-outlined me-2">book_2</span> My単語帳
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-area="Identity" asp-page="/Account/Manage/Index" class="menu-item">
+                            <span class="material-symbols-outlined me-2">settings</span>アカウント設定
+                        </a>
+                    </li>
+                    <li>
+                        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                            <button type="submit" class="menu-item logout">
+								<span class="material-symbols-outlined me-2">logout</span>ログアウト
+							</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="nav-item d-flex gap-2">
+			<a class="btn btn-outline btn-outline-brand fw-bold" asp-area="Identity" asp-page="/Account/Login">ログイン</a>
+            <a class="text-white btn btn-brand fw-bold" asp-area="Identity" asp-page="/Account/Register">新規登録</a>
+        </div>
+    }
+</div>
+<link rel="stylesheet" href="~/css/loginPartial.css" asp-append-version="true" />
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const userId = '@aspNetUserId';
+        if (userId)
+        {
+            getNewNotificationCount(userId);
+        }
+    });
+
+
+    const userMenu = document.getElementById('UserMenu');
+    // プロフィールアイコンをクリックしたときにメニューを表示/非表示
+    const profileIcon = document.getElementById('profileIcon');
+    if(profileIcon){
+    profileIcon.addEventListener('click', function (e) {
+        e.preventDefault();
+        userMenu.classList.toggle('show');
+    });
+    }
+
+    if (profileIcon && userMenu){
+        // メニュー外をクリックした場合、メニューを閉じる
+        window.addEventListener('click', function (e) {
+            if (!profileIcon.contains(e.target) && !userMenu.contains(e.target)) {
+                userMenu.classList.remove('show');
+            }
+        });
+    }
+
+    const notificationMenu = document.getElementById('notification-menu');
+    const notificationIcon = document.getElementById('notification-icon');
+    notificationIcon?.addEventListener('click', async () => {
+        if (notificationMenu && !notificationMenu.classList.contains('show')){
+                notificationMenu.classList.add('show');
+                const clientTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                try {
+                        const response = await fetch(`/api/Notifications/GetNotifications?timeZone=${encodeURIComponent(clientTimeZone)}`);
+
+                    if (response.ok) {
+                        notificationMenu.innerHTML = await response.text();
+                        executeScriptsInElement(notificationMenu);
+
+                    } else {
+                        console.error("Failed to load notifications");
+                    }
+                }
+                catch (error) {
+                    console.error("Error fetching notifications:", error);
+                }
+        } else{
+            document.getElementById('notification-badge').style.display = 'none';
+            notificationMenu.classList.remove('show');
+        }
+        });
+
+    if (notificationIcon && notificationMenu) {
+        // メニュー外をクリックした場合、メニューを閉じる
+        window.addEventListener('click', function (e) {
+                if (!notificationIcon.contains(e.target) && !notificationMenu.contains(e.target) 
+                && notificationMenu.classList.contains('show')) {
+                document.getElementById('notification-badge').style.display = 'none';
+                notificationMenu.classList.remove('show');
+            }
+        });
+    }
+
+function executeScriptsInElement(targetElement){
+    // 挿入されたHTML内のスクリプトタグを取得
+    const scripts = targetElement.querySelectorAll('script');
+    scripts.forEach(script => {
+        const newScript = document.createElement('script');
+        newScript.textContent = script.textContent; // スクリプト内容をコピー
+        document.body.appendChild(newScript); // スクリプトを再追加して実行
+        script.remove(); // 元のスクリプトタグは削除
+    });
+}
+async function getNewNotificationCount(userId){
+        try {
+                const response = await 
+                    fetch(`/api/Notifications/GetNewNotificationCount?aspNetUserId=${userId}`);
+
+                if (response.ok) {
+                    const newNotificationCount = await response.text();
+                    @* console.log(newNotificationCount); *@
+                    updateNotificationBadge(newNotificationCount);
+                } else {
+                    console.error("Failed to load new notification count");
+                }
+        } catch (error) {
+                console.error("Error fetching new notification count:", error);
+        }
+}
+
+function updateNotificationBadge(newNotificationCount){
+        const notificationBadge = document.getElementById('notification-badge');
+        // 通知数が0以下の場合、バッジを非表示
+        if (newNotificationCount <= 0) {
+            notificationBadge.style.display = 'none';
+            return;
+        }
+
+        // 通知数が1以上の場合、バッジを更新して表示
+        notificationBadge.textContent = newNotificationCount > 99 ? '99+' : newNotificationCount;
+        notificationBadge.style.display = 'inline-block';
+}
+
+function convertToLocalTime(){
+        const createdAtElements = document.querySelectorAll('.createdAt');
+
+         createdAtElements.forEach(element => {
+                   const utcDateString = element.getAttribute('data-created-at');
+
+                   try {
+                       // UTC 日時を解析してローカルタイムに変換
+                       const localDate = new Date(utcDateString);
+                       element.innerText = localDate.toLocaleString(undefined, {
+                           year: 'numeric',
+                           month: '2-digit',
+                           day: '2-digit',
+                           hour: '2-digit',
+                           minute: '2-digit',
+                           hour12: false
+                       });
+                   } catch (error) {
+                       console.error("Date parsing error:", error);
+                       element.innerText = "Invalid date";
+                   }
+               });
+}
+</script>
+

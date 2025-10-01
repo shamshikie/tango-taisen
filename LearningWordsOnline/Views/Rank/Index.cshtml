@@ -1,0 +1,247 @@
+﻿@model LearningWordsOnline.ViewModels.RankViewModel
+@using LearningWordsOnline.Helpers
+@{
+	ViewData["Title"] = "Rank";
+	ViewData["ShowMenuBar"] = true;
+}
+<style>
+	.container {
+	width: 80%;
+	/* max-width: 400px; */
+	margin: 0 5%;
+	padding: 20px;
+	background: #fff;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	}
+
+	.title
+	{
+	text-transform: uppercase;
+	}
+
+	h1.display-4 {
+	font-size: 1.8rem;
+	font-weight: bold;
+	margin-bottom: 15px;
+	color: #333;
+	}
+
+	.rank-point {
+	font-size: 1.5rem;
+	margin-bottom: 10px;
+	color: #555;
+	}
+
+	.play-button {
+	font-size: 1.5rem;
+	font-weight: bold;
+	width: 100%;
+	padding: 5px;
+	background-color: #ff5733;
+	border: none;
+	color: #fff;
+	transition: background-color 0.3s ease;
+	letter-spacing: 0.12em;
+	}
+
+	.play-button:hover {
+		color:white;
+		background-color: #e54e2e;
+	}
+
+	.text-center {
+	text-align: center;
+	}
+
+	.icon {
+	font-size: 1.5rem;
+	color: #ff5733;
+	}
+
+	.my-name{
+		color: #ff5733;
+	}
+
+	.modal-body {
+	max-height: 65vh; /* ビューポートの高さを制限 */
+	overflow-y: auto; /* 縦スクロールを有効化 */
+	}
+
+	.toggle-accordion[aria-expanded="true"] {
+	background-color: #e9ecef; /* 開いたときの背景色 */
+	transition: background-color 0.3s ease;
+	}
+
+	.toggle-accordion:hover {
+	cursor: pointer;
+	background-color: #f8f9fa; /* ホバー時の背景色 */
+	}
+
+	.arrow-icon {
+	transition: transform 0.3s ease;
+	}
+
+	.toggle-accordion[aria-expanded="true"] .arrow-icon {
+	transform: rotate(180deg); /* 開いたとき矢印を上向きに */
+	}
+
+	.battle-position{
+		width: 40px;
+		background-color: #ff5733;
+	}
+</style>
+<div class="d-flex justify-content-evenly align-items-center flex-grow-1 flex-column">
+	<div class="container">
+		<div class="text-center">
+			<div class="icon">
+				<i class="material-symbols-outlined">crown</i>
+			</div>
+			<h1 class="title">Ranked Match</h1>
+			<div class="rank-point mb-4">
+				Your Rank: <strong class="text-brand">
+					@RankHelper.GetRank(Model.AppUser.Profile.RankPoint) (@Model.AppUser.Profile.RankPoint pts)</strong>
+			</div>
+			<form asp-action="Play" method="get">
+				@* TODO:将来的に言語選択導入、言語ID固定 *@
+				<input type="hidden" name="languageId" value="1" />
+				<button type="submit" class="btn btn-lg play-button">PLAY</button>
+			</form>
+		</div>
+	</div>
+	<div class="container">
+		<button type="button" class="btn w-100 p-0" data-bs-toggle="modal" data-bs-target="#modal-histroy">
+			<div class="p-3 text-center border rounded shadow-sm page-item">
+				<div class="icon text-dark">
+					<i class="material-symbols-outlined">history</i>
+				</div>
+				<h2 class="item-title">Match Histroy</h2>
+				<div class="description">
+					<!-- Content -->
+					過去の戦績や対戦プレイヤーを確認
+				</div>
+			</div>
+		</button>
+	</div>
+	<!-- Modal -->
+	<div class="modal fade" id="modal-histroy" tabindex="-1" aria-labelledby="modalLabel-modal-histroy" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="modalLabel-modal-histroy">Match Histroy</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					@foreach (var battle in Model.Battles)
+					{
+						var myBattleUser = battle.BattleAppUsers.FirstOrDefault(ba => ba.AppUserId == Model.AppUser.Id);
+						if (myBattleUser is null)
+						{
+							continue;
+						}
+						<div class="battle-item mb-3">
+							<!-- クリック可能なヘッダー部分 -->
+							<div class="d-flex justify-content-between align-items-center bg-light p-1 px-3 rounded shadow-sm toggle-accordion"
+							data-bs-toggle="collapse"
+							data-bs-target="#accordionContent@(battle.Id)"
+							aria-expanded="false"
+							aria-controls="accordionContent@(battle.Id)">
+
+								<div class="d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+									@if (myBattleUser.Position == 1)
+									{
+										<i class="bi bi-trophy-fill text-warning fs-2"></i> <!-- 金メダル -->
+									}
+									else
+									{
+										<span class="fw-bold fs-4">#@(myBattleUser.Position)</span>
+									}
+								</div>
+
+								<!-- Battled At -->
+								<div class="text-end flex-grow-1 text-truncate mx-3">
+									<strong class="">Battled At:</strong>
+									<span class="battledAt text-secondary fw-semibold"
+									data-battled-at="@battle.BattledAt.ToString("yyyy-MM-ddTHH:mm")Z">
+										@battle.BattledAt.ToString("yyyy-MM-dd HH:mm")
+									</span>
+								</div>
+
+								<!-- 矢印アイコン -->
+								<div class="arrow-icon">
+									<i class="bi bi-chevron-down"></i> <!-- Bootstrap Icons -->
+								</div>
+							</div>
+
+							<!-- 順位表示 (アコーディオン) -->
+							<div id="accordionContent@(battle.Id)" class="collapse mt-2">
+								<div class="bg-white p-3 rounded shadow-sm">
+									@foreach (var item in battle.BattleAppUsers.OrderBy(ba => ba.Position))
+									{
+										<div class="d-flex align-items-center mb-3">
+											<!-- 順位 -->
+											<div class="badge text-white d-flex justify-content-center align-items-center mx-3 fs-5 battle-position">
+												#@(item.Position)
+											</div>
+
+											<!-- アイコンと名前 -->
+											<div class="d-flex align-items-center">
+												<img src="@Url.Content(item.AppUser?.Profile.Icon?.Url ?? "/images/icons/gear.png")"
+												class="rounded-circle"
+												alt="Friend Icon"
+												style="width: 50px; height: 50px; object-fit: contain; margin-right: 15px; cursor:pointer;"
+												onclick="window.location='/Profile/@item?.AppUser?.Id'" />
+												<span class="display-name fw-bold fs-5 @IsMyName(item?.AppUser?.Id)">
+													@if (item?.AppUser is null)
+													{
+														<text>"Unknown"</text>
+													}
+													else
+													{
+														@item.AppUser.Profile.DisplayName 
+													}
+												</span>
+											</div>
+										</div>
+									}
+								</div>
+							</div>
+						</div>
+					}
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@functions
+{
+	string IsMyName(int? appUserId) => Model.AppUser.Id == appUserId ? "my-name" : "";
+}
+
+<link rel="stylesheet" href="~/css/mainPage.css" asp-append-version="true" />
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		const battledAtElements = document.querySelectorAll('.battledAt');
+
+		battledAtElements.forEach(battledAtElement => {
+			const battledAt = battledAtElement.getAttribute('data-battled-at'); // UTC日時を取得
+			const date = new Date(battledAt); // Date オブジェクトを作成
+
+			// optionsを指定してフォーマット
+			const formattedDate = date.toLocaleString('ja-JP', {
+				year: 'numeric',
+				month: '2-digit',
+				day: '2-digit',
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false, // 24時間制
+			}); // フォーマット済み文字列に置き換え
+
+			battledAtElement.textContent = formattedDate;
+		});
+	});
+</script>

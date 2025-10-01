@@ -1,0 +1,138 @@
+﻿@{
+    ViewData["Title"] = "Ranked Match";
+    ViewData["ShowHeader"] = false;
+}
+
+<style>
+    /* ランクバッジ */
+    .rank-badge {
+        background: #ff5733;
+        color: white;
+        font-size: 1.8rem;
+        font-weight: bold;
+        padding: 10px 20px;
+        border-radius: 8px;
+        min-width: 80px;
+        display: inline-block;
+        text-align: center;
+    }
+
+    /* 矢印 */
+    .rank-arrow {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #ff5733;
+        margin: 0 10px;
+    }
+
+    /* ポイント表示 */
+    .rank-point-section {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    /* 昇格までのポイント */
+    .promotion-points {
+        font-size: 1.3rem;
+        font-weight: bold;
+        background: #ffcfc5;
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 10px;
+    }
+</style>
+
+<div id="language-data" data-language-id="@ViewBag.LanguageId"></div>
+<div id="user-data" data-user-id="@ViewBag.UserId"></div>
+<div class="title py-1 w-100 text-center my-1">
+    <div class="display-6 m-0 battle-page-title">@ViewData["Title"]</div>
+</div>
+
+<div id="waiting-phase" class="phase" hidden>
+    <div class="content">
+        <div id="status" class="text-center text-brand fs-1 fw-bold mb-5">
+            <span>Searching for Players</span><span class="loading-dots"></span>
+            <hr class="text-brand" />
+        </div>
+        <h2 class="text-center">Player: <span id="playerCount">0</span> / @ViewBag.MaxPlayerCount</h2>
+        <div class="spinner-border" role="status" hidden>
+            @* <span class="visually-hidden">Loading...</span> *@
+        </div>
+    </div>
+    <form asp-action="Index" class="text-center mt-3">
+        <button id="quitButton" type="submit" class="btn btn-danger rounded-pill px-5 py-2">Quit</button>
+    </form>
+</div>
+
+<div id="game-phase" class="phase" hidden>
+    <div class="container">
+        <div class="row justify-content-center">
+            <!-- プレイヤー情報エリア -->
+            <div id="players-area" class="d-flex flex-wrap justify-content-center gap-2">
+                <!-- プレイヤー情報はここに動的に挿入される -->
+            </div>
+        </div>
+    </div>
+    <div id="question"></div>
+    <div id="timer-container" hidden>
+        <div id="timer-bar" hidden></div>
+        <div id="timer-text" hidden></div>
+    </div>
+    <div id="options" class="button-grid"></div>
+    <!-- 質問番号表示 -->
+    <div id="question-counter" class="question-counter"></div>
+</div>
+
+<div id="result-phase" class="phase" hidden>
+    <div class="text-center text-brand fs-1 fw-bold">
+        RESULTS
+		<hr class="text-brand" />
+    </div>
+    
+    <div id="results-area" class="align-items-center gap-1"></div>
+    <button id="goRankCalcBtn" disabled class="btn btn-lg btn-outline-brand rounded-pill px-5 py-2 my-3">Next</button>
+</div>
+
+<div id="rankCalc-phase" class="phase" hidden>
+    <div class="text-center text-brand fs-1 fw-bold"> 
+        YOUR RANK
+        <hr class="text-brand" />
+    </div>
+    <div id="rankCalc-area">
+        <div class="rounded-3 text-center shadow-lg p-4 mb-4 d-flex flex-column gap-4">
+            <!-- ランク表示 -->
+            <div class="rank-section d-flex align-items-center justify-content-center">
+                <span class="rank-badge rank-alphabet"></span>
+            </div>
+
+            <!-- ランクポイント表示 -->
+            <div class="rank-point-section">
+                <span class="rank-point-before"></span>pts
+                <span class="rank-arrow">→</span>
+                <span class="rank-point-total fw-bold"></span>pts
+				<div class="fw-bold fs-5">
+					<span class="rank-point-difference"></span>pts
+                    </div>
+            </div>
+
+            <!-- 昇格までのポイント -->
+            <div class="promotion-points">
+                昇格まであと <span class="fw-bold text-brand rank-point-promotion"></span> pts
+            </div>
+        </div>
+    </div>
+    <div class="d-flex gap-5 my-3">
+        <a asp-action="Play" class="btn btn-outline-brand rounded-pill px-4 py-2">Play Again</a>
+        <a asp-action="Index" class="btn btn-dark rounded-pill px-3 py-2">Return Home</a>
+    </div>
+
+	@* <button id="returnToHome" class="btn btn-dark">Return Home</button> *@
+</div>
+
+
+<link rel="stylesheet" href="~/css/quiz.css" asp-append-version="true" />
+@* <script src="~/js/signalr/dist/browser/signalr.js"></script> *@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script type="module" src="~/js/quiz.js" asp-append-version="true"></script>
+<script type="module" src="~/js/ranked.js" asp-append-version="true"></script>
+

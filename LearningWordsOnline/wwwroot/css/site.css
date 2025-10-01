@@ -1,0 +1,174 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+    padding: 1%;
+    width: 100%;
+    height: 100%;
+    display: flex; /* 必要ならフレックスボックスも使用 */
+    flex-direction: column;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 1rem;
+    color: #888;
+}
+
+.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined' !important;
+}
+
+.btn-brand {
+    color: white;
+    background-color: #ff5733;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .btn-brand:hover {
+        color: white;
+        background-color: #e54e2e;
+    }
+    .btn-brand:disabled,
+    .btn-brand[disabled] {
+        background-color: #e54e2e !important; /* 無効時の背景色 */
+        color: #ffffff !important; /* 無効時の文字色 */
+        opacity: 0.6; /* 透明度を下げる（少し薄く見せる） */
+        outline: none;
+    }
+    .btn-brand:focus {
+        color: white;
+        background-color: #ff5733;
+        box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #ff5733;
+    }
+    .btn-brand:active,
+    .btn-brand.active {
+        background-color: #d8432b !important;
+        color: white !important;
+        box-shadow: 0 0 0 0.2rem rgba(255, 87, 51, 0.5) !important;
+    }
+
+
+.btn-outline-brand {
+    color: #ff5733;
+    background-color: white;
+    outline: 1px solid #ff5733;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .btn-outline-brand:hover {
+        background-color: #ff5733;
+        color: white;
+    }
+
+    .btn-outline-brand:disabled,
+    .btn-outline-brand[disabled] {
+        outline: none;
+    }
+    .btn-outline-brand:focus {
+        color: #ff5733;
+        background-color: white;
+        box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #ff5733;
+    }
+    .btn-outline-brand:active,
+    .btn-outline-brand.active {
+        background-color: #ff5733;
+        color: white;
+        box-shadow: 0 0 0 0.2rem rgba(255, 87, 51, 0.5) !important;
+    }
+
+
+.form-check-input:checked {
+    background-color: #ff5733 !important; /* オンの背景色 */
+    border-color: #ff5733 !important;
+}
+
+.text-brand {
+    color: #ff5733;
+}
+
+/* スライダーのつまみ（ノブ部分） - Webkit（Chrome, Safari, Edge） */
+.form-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #ff5733; /* つまみの色 */
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+/* スライダーのつまみ（ノブ部分） - Firefox */
+.form-range::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #ff5733; /* つまみの色 */
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+/* つまみをホバーしたとき */
+.form-range::-webkit-slider-thumb:hover,
+.form-range::-moz-range-thumb:hover {
+    background: #ff2a00; /* ホバー時のつまみの色 */
+}
+
+a {
+    color: #ff5733;
+}
+
+    a.nav-link {
+        color: #ff5733;
+    }
+
+.nav-link:focus, .nav-link:hover {
+    color: #e54e2e;
+}
+
+.page-link {
+    color: #ff5733;
+}
+    .page-link:hover {
+        color: #e54e2e;
+    }
+    .active > .page-link, .page-link.active {
+        color: var(--bs-pagination-active-color);
+        background-color: #ff5733;
+        border-color: #ff5733;
+    }
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: #ff5733;
+}

@@ -1,0 +1,77 @@
+﻿@using LearningWordsOnline.GameLogic
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@model IEnumerable<LearningWordsOnline.GameLogic.Question>
+@{
+    ViewData["Title"] = "Training";
+    ViewData["ShowHeader"] = false;
+}
+
+<div id="questions-container" data-questions='@Html.Raw(Json.Serialize(Model))'></div>
+<div id="settings-data" data-timer="@ViewBag.Timer"></div>
+
+<div class="title py-1 w-100 text-center my-1">
+    <div class="display-6 text-brand m-0">@ViewData["Title"]</div>
+</div>
+<div id="game-phase" class="phase" hidden>
+    <div class="container">
+        <div class="row justify-content-center">
+            <!-- 今何問目 -->
+            <div id="players-area" class="d-flex flex-wrap justify-content-center">
+                <!-- プレイヤー情報はここに動的に挿入される -->
+            </div>
+        </div>
+    </div>
+    <div id="question"></div>
+    <div id="timer-container" hidden>
+        <div id="timer-bar" hidden></div>
+        <div id="timer-text" hidden></div>
+    </div>
+    <div id="options" class="button-grid"></div>
+    <!-- 質問番号表示 -->
+    <div id="question-counter" class="question-counter"></div>
+</div>
+
+<div id="result-phase" class="phase" hidden>
+    <div class="text-center text-brand fs-1 fw-bold">
+        RESULTS
+        <hr class="text-brand" />
+    </div>
+    <div id="results-area" class="">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Word</th>
+                    @* <th>正解/不正解</th> *@
+                    <th>Meanings</th>
+                    <th>Selected</th>
+                </tr>
+            </thead>
+            <tbody id="results-body"></tbody>
+        </table>
+
+    </div>
+    <div class="d-flex gap-5 my-3">
+        <form asp-action="Play" method="post">
+            <input type="hidden" name="trainingMode" value="@HttpContextAccessor.HttpContext?.Session.GetString("TrainingMode")" />
+            <input type="hidden" name="questionLevel" value="@HttpContextAccessor.HttpContext?.Session.GetInt32("QuestionLevel")" />
+            <input type="hidden" name="parentCategoryId" value="@HttpContextAccessor.HttpContext?.Session.GetInt32("ParentCategoryId")" />
+            <input type="hidden" name="childCategoryId" value="@HttpContextAccessor.HttpContext?.Session.GetInt32("ChildCategoryId")" />
+            <input type="hidden" name="questionCount" value="@HttpContextAccessor.HttpContext?.Session.GetInt32("QuestionCount")" />
+            <input type="hidden" name="languageId" value="@HttpContextAccessor.HttpContext?.Session.GetInt32("LanguageId")" />
+            <button type="submit" class="btn btn-outline-brand rounded-pill px-4 py-2">Play Again</button>
+        </form>
+        <a asp-action="Index" class="btn btn-dark rounded-pill px-3 py-2">Return Home</a>
+    </div>
+</div>
+
+@* <script>
+        document.getElementById("again").addEventListener("click", function() {
+        window.location.reload();  // ページをリロード
+    });
+</script> *@
+
+<link rel="stylesheet" href="~/css/quiz.css" asp-append-version="true" />
+<script type="module" src="~/js/quiz.js" asp-append-version="true"></script>
+<script type="module" src="~/js/training.js" asp-append-version="true"></script> 

@@ -1,0 +1,130 @@
+﻿@page 
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+    <div class="col-md-6">
+        <section class="mb-5">
+            <form id="registerForm" class="card shadow p-4" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            @* <h2 class="text-brand text-center">新規アカウントを作成</h2>
+            <hr /> *@
+            <h2 class="text-center mb-4 text-brand">新規アカウントを作成</h2>
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" placeholder="name@example.com" />
+                <label asp-for="Input.Email">メールアドレス</label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">@* //UserName *@
+                <input asp-for="Input.UserName" class="form-control"  aria-required="true" placeholder="username" />
+                <label asp-for="Input.UserName">ユーザーネーム</label>
+                <span asp-validation-for="Input.UserName" class="text-danger" style="display: block;"></span>
+                <span id="usernameCheckResult"></span> 
+                @*<button type="button" id="checkUsernameButton" class="btn btn-secondary mt-2">ユーザーネームを確認</button>*@
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <label asp-for="Input.Password">パスワード</label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <label asp-for="Input.ConfirmPassword">パスワード (確認)</label>
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">@* //表示名 *@
+                <input asp-for="Input.DisplayName" class="form-control" aria-required="true" placeholder="ニックネーム" />
+                <label asp-for="Input.DisplayName">ニックネーム</label>
+                <span asp-validation-for="Input.DisplayName" class="text-danger"></span>
+            </div>
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-brand">登録</button>
+            </form>
+        </section>
+    </div>
+
+    <!-- 外部アカウントでの登録 -->
+    <div class="col-md-6 col-md-offset-2">
+            <section class="card shadow p-4">
+                <h3 class="text-center mb-4 text-brand">外部サービスで登録</h3>
+                <hr />
+            @{
+                if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                {
+                    <div>
+                        <div>
+                            <p class="text-center">
+                                外部認証サービスが構成されていません。
+                                <a href="https://go.microsoft.com/fwlink/?LinkID=532715">こちらの記事</a>を参照してください。
+                            </p>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                        <div>
+                            <p>
+                                @foreach (var provider in Model.ExternalLogins!)
+                                {
+                                    <button type="submit" class="btn btn-brand" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                }
+                            </p>
+                        </div>
+                    </form>
+                }
+            }
+        </section>
+    </div>
+    </div>
+</div>
+<footer>
+    <p>&copy; 2025 Example Company. All Rights Reserved.</p>
+</footer>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+            var Input_UserName = document.getElementById('Input_UserName');
+
+            Input_UserName.addEventListener('input', function(){
+                document.getElementById('usernameCheckResult').textContent = '';
+                if(document.getElementById('Input_UserName-error')){
+                    document.getElementById('Input_UserName-error').textContent = '';
+                }
+            });
+            // document.getElementById('checkUsernameButton').addEventListener('click', function() {
+            Input_UserName.addEventListener('blur', function() {
+            var username = document.getElementById('Input_UserName').value;
+            var usernameError = document.getElementById('Input_UserName-error');
+            var userNameCheckResult =  document.getElementById('usernameCheckResult');
+            if (!username || usernameError){
+               userNameCheckResult.textContent = '';
+                return;
+            }
+
+            console.log("あいうえお");
+            // AccountControllerのCheckUsernameAvailabilityアクションにリクエストを送る
+            fetch(`/Accounts/CheckUsernameAvailability?username=${username}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.available) {
+                        userNameCheckResult.textContent = 'このユーザーネームは使用可能です。';
+                        usernameCheckResult.classList.remove('text-danger');
+                        usernameCheckResult.classList.add('text-success');
+                    } else {
+                        usernameCheckResult.classList.remove('text-success');
+                        usernameCheckResult.classList.add('text-danger');
+                        userNameCheckResult.textContent = 'このユーザーネームはすでに使用されています。';
+                    }
+                })
+                .catch(error => {
+                    console.error('エラー:', error);
+                    userNameCheckResult.classList.add('text-danger');
+                    userNameCheckResult.textContent = 'エラーが発生しました。';
+                });
+        });
+    </script>
+}

@@ -1,0 +1,271 @@
+﻿[hidden] {
+    display: none !important;
+}
+
+.game {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.battle-page-title {
+    color: #ff5733;
+    flex-grow: 0;
+}
+
+.phase {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+    padding: 1%;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+#question {
+    width: 60%;
+    min-width: 300px;
+    font-size: 2rem; /* 大きめのサイズで目立たせる */
+    font-weight: bold; /* 強調 */
+    color: #333; /* シックなダークグレー */
+    text-align: center; /* 中央揃え */
+    margin: 0px auto; /* 上下余白と中央寄せ */
+    padding: 2px 5px; /* 内側の余白 */
+    background-color: #f8f9fa; /* 背景に淡い色を付ける */
+    border: 2px solid gray; /* プライマリ色の枠線 */
+    border-radius: 10px; /* 角を丸くする */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 軽いシャドウを付ける */
+    display: inline-block; /* コンテンツ幅に応じてサイズ調整 */
+    transition: all 0.1s ease-in-out;
+}
+
+#timer-container {
+    position: relative;
+    width: 85%;
+    height: 20px; /* 高さを指定 */
+    background-color: #e0e0e0; /* 背景色 */
+    /* border-style: none; */
+    border-radius: 10px; /* 丸みを追加 */
+    overflow: hidden; /* 子要素が枠をはみ出さないように */
+    margin: 0px auto; /* 中央寄せ */
+}
+
+#timer-bar {
+    margin: 0 0 0 auto; /* 右寄せの術 */
+    height: 100%;
+    width: 100%; /* 初期幅を0%に設定 */
+    background-color: #ff5733; /* プライマリ色 */
+    transition: width 0.1s linear; /* アニメーションを追加 */
+}
+
+#timer-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    font-weight: bold;
+    color: #000;
+    pointer-events: none; /* テキストはクリック不可 */
+}
+
+
+.button-grid {
+    width: 80%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    place-content: center;
+    place-items: center;
+    gap: 1rem; /* ボタン間のスペースを調整 */
+}
+
+
+
+#options .answer-button {
+    width: 100%; /* ボタンの幅 */
+    height: 100%;
+    max-width: 300px;
+    display: block;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    /* padding: 0.3rem; */
+    border-radius: 0.5rem;
+}
+
+/* 縦画面のとき */
+@media (orientation: portrait) {
+    .button-grid {
+        grid-template-columns: 1fr; /* 1列に変更 */
+    }
+
+    #options.answer-button {
+        /* width: 100%; 
+            margin-bottom: 1rem; */
+    }
+}
+
+.spinner-border {
+    margin: 30% 0 0 0;
+}
+
+.question-counter {
+    position: absolute;
+    top: 10px; /* 上から10px */
+    right: 10px; /* 右から10px */
+    font-size: 14px; /* フォントサイズを調整 */
+    background-color: rgba(0, 0, 0, 0.5); /* 背景色 */
+    color: white; /* テキストカラー */
+    padding: 2px 4px; /* パディング */
+    border-radius: 5px; /* 丸みを帯びた角 */
+    min-height: 28px;
+    /*width: 9%;*/
+    max-width: 50px;
+}
+
+.quit-button {
+    font-weight: bold;
+    width: 50px; /* ボタンの幅 */
+    height: 50px; /* ボタンの高さ */
+    font-size: 1rem;
+    border-radius: 50%; /* 丸くする */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.loading-dots {
+    display: inline-block;
+    width: 1em; /* ドット3つ分の固定幅 */
+    text-align: left; /* 左寄せで見た目を自然に */
+}
+
+#players-area {
+    /* margin-top: 20px; */
+    flex-wrap: wrap; /* アイコンが画面幅を越えた時に折り返す */
+}
+
+.player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 80px; /* アイコンとその名前・ポイントの幅を制限 */
+}
+
+.player-icon {
+    width: 60px; /* 丸アイコンの幅 */
+    height: 60px; /* 丸アイコンの高さ */
+    border: none;
+    font-size: 20px; /* テキストサイズ */
+    margin-bottom: 0; /* アイコンと名前の間隔 */
+    transition: border-color 0.3s ease; /* スムーズな切り替え */
+}
+
+    .player-icon.with-border {
+        border: 2px solid #ff5733;
+    }
+
+        .player-icon.with-border.correct-answer {
+            border: 4px solid #94f240;
+        }
+
+        .player-icon.with-border.incorrect-answer {
+            border: 4px solid #fd3631;
+        }
+
+        .player-icon.with-border.no-nswer {
+            border: 4px solid #868686;
+        }
+
+.player-name {
+    font-size: 16px; /* 名前のサイズ */
+    font-weight: bold; /* 名前を強調 */
+    margin: 0; /* 名前とポイントの間隔を縮める */
+}
+
+.player-points {
+    font-size: 14px; /* ポイントのサイズ */
+    color: #666; /* ポイントの色 */
+    margin: 0;
+}
+
+/* プレイヤー情報が横並びになるように調整 */
+.d-flex {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.gap-3 > .player {
+    gap: 10px; /* 各プレイヤー間の隙間 */
+}
+
+.result-phase {
+    /* max-width: 600px;
+        margin: 0 auto; */
+}
+
+    .result-phase h2 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+#results-area {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+
+.result-item {
+    display: flex;
+    width: 80%;
+    max-width: 500px;
+    height: 10%;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+    .result-item .rank {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #ffbf00; /* ゴールド */
+        width: 30px;
+        text-align: center;
+    }
+
+    .result-item .player-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+
+    .result-item .player-name {
+        flex: 1;
+        text-align: left;
+        font-size: 1.2rem;
+        margin-left: 10px;
+    }
+
+    .result-item .player-points {
+        font-size: 1.2rem;
+        font-weight: bold;
+        width: 80px;
+        text-align: right;
+    }
+
+#goRankCalc {
+}

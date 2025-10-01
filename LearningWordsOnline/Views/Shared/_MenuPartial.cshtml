@@ -1,0 +1,32 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div id="main-menu" class="navbar-light bg-light border-top">
+        <a class="nav-link  menu-item" asp-action="Index" asp-controller="Training">
+            <span class="material-symbols-outlined">exercise</span>
+            <div class="menu-item-description">Training</div>
+        </a>
+        <a class="nav-link menu-item" href="/Ranking/Index">
+            <span class="material-symbols-outlined">emoji_events</span>
+            <div class="menu-item-description">Ranking</div>
+        </a>
+        <a class="nav-link menu-item battle-link" href="/Rank/Index">
+            <span class="material-symbols-outlined">swords</span>
+            <div class="menu-item-description">Battle</div>
+        </a>
+        <a class="nav-link menu-item" href="/Friends/Index">
+            <span class="material-symbols-outlined">diversity_2</span>
+            <div class="menu-item-description">Friend</div>
+        </a>
+        <a class="nav-link menu-item" href="/Rooms/Index">
+            <span class="material-symbols-outlined">meeting_room</span>
+            <div class="menu-item-description">Room</div>
+        </a>
+    </div>
+    <link rel="stylesheet" href="~/css/bottomMenu.css" asp-append-version="true" />
+}
+

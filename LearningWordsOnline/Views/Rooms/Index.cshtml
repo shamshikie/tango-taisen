@@ -1,0 +1,203 @@
+﻿@{
+    ViewData["Title"] = "Room Match";
+    ViewData["ShowMenuBar"] = true;
+}
+@* <style>
+    .search-container {
+        padding: 20px 0 20px 0;
+        background-color: #f9f9f9;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 90%;
+    }
+
+    .search-box .form-control {
+        font-size: 16px;
+        padding: 10px 12px;
+        width: 90%;
+    }
+
+    .search-box .btn-primary {
+        background-color: #6200ee;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+        .search-box .btn-primary:hover {
+            background-color: #3700b3;
+        }
+</style> *@
+
+<div class="container my-4 flex-grow-1">
+    <div class="text-center mb-4">
+        <h1 class="page-title">@ViewData["Title"]</h1>
+    </div>
+    <div class="d-flex flex-column justify-content-center align-items-center gap-4">
+        <!-- 部屋作成 -->
+        <button type="button" class="col-9 col-md-6 col-lg-4 text-decoration-none btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#modal-create">
+            <div class="p-3 text-center border rounded shadow-sm page-item">
+                <h2 class="item-title">Create</h2>
+                <div class="description">
+                    <!-- Content -->
+                    部屋を作成
+                </div>
+            </div>
+        </button>
+        <!-- Modal -->
+        <div class="modal fade" id="modal-create" tabindex="-1" aria-labelledby="modalLabel-create" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="modalLabel-create">Create a Room</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form asp-action="Create" method="post" id="form-create">
+                            <!-- ドロップダウンリスト -->
+                            @* <div class="form-group mb-3">
+                                <label for="dropdown" class="form-label">小カテゴリ</label>
+                                <select id="dropdown" name="categoryId" class="form-select" required>
+                                    @foreach (var item in parentCategory.ChildCategories)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    } 
+                                </select>
+                            </div> *@
+                            <!-- 最大人数 -->
+                            @* <div class="form-group mb-3">
+                                <label for="playerCapacity" class="form-label">最大人数</label>
+                                <input type="number" id="playerCapacity" name="playerCapacity" class="form-range" min="1" max="4" value="2" step="1" />
+                                <div class="text-center mt-2">
+                                    <span id="playerCapacity-value">2</span>
+                                </div>
+                            </div> *@
+                            <!-- 問題数 -->
+                            <div class="form-group mb-3">
+                                <label for="questionCount" class="form-label">問題数</label>
+                                <input type="range" id="questionCount" name="questionCount" class="form-range" min="1" max="@ViewBag.MaxQuestionCount" value="5" step="1" oninput="updateQuestionCountValue(this.value, 'questionCount')" />
+                                <div class="text-center mt-2">
+                                    <span id="questionCount-value">5</span>問
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" form="form-create" class="btn btn-brand">Create</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 部屋入室 -->
+        <button type="button" class="col-9 col-md-6 col-lg-4 text-decoration-none btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#modal-join">
+            <div class="p-3 text-center border rounded shadow-sm page-item">
+                <h2 class="item-title">Join</h2>
+                <div class="description">
+                    <!-- Content -->
+                    Room IDで特定の部屋に参加
+                </div>
+            </div>
+        </button>
+        <!-- Modal -->
+        <div class="modal fade" id="modal-join" tabindex="-1" aria-labelledby="modalLabel-join" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="modalLabel-join">Join a Room</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- 部屋ID入力 -->
+                        <div class="form-group text-center form-floating">
+                            <input type="text" id="roomId" name="roomId" placeholder="Enter a Room ID" class="form-control form-control-md text-left" />
+                            <div id="error-roomId" class="text-danger mt-2"></div>
+                            <label for="roomId">Room ID</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" form="form-join" class="btn btn-brand" id="joinRoomBtn">Join</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* TODO: 将来的に部屋検索システムをいれる、部屋名も必要になる *@
+        @* <div class="search-container text-center mt-5 ms-3 me-3">
+            <h3 class="mb-4">募集中の部屋を探す</h3>
+            <form action="#" method="get" class="search-form">
+                <div class="search-box d-flex align-items-center justify-content-center">
+                    <!-- マテリアルデザインのテキストフィールド -->
+                    <div class="form-floating flex-grow-1" style="max-width: 260px;">
+                        <input type="text"
+                        name="query"
+                        id="searchInput"
+                        placeholder="Enter keywords"
+                        class="form-control shadow-sm"
+                        style="border-radius: 8px;">
+                        <label for="searchInput">キーワードを入力</label>
+                    </div>
+                    <!-- マテリアルデザインのボタン -->
+                    <button type="submit" class="btn btn-primary d-flex align-items-center shadow-sm"
+                    style="border-radius: 50%; width: 36px; height: 36px;">
+                        <i class="material-symbols-outlined" style="font-size: 18px;">search</i>
+                    </button>
+                </div>
+            </form>
+        </div> *@
+
+    </div>
+</div>
+
+@{
+    var errorMessage = TempData["ErrorMessage"] as string;
+    if (!string.IsNullOrEmpty(errorMessage))
+    {
+        //エラーメッセージがある場合、隠し要素としてHTMLに配置
+        <div id="errorMessage" style="display:none;">@errorMessage</div>
+        <script>
+            var errorMessageElement = document.getElementById('errorMessage');
+            if (errorMessageElement) {
+                alert(errorMessageElement.textContent);
+            }
+        </script>
+    }
+}
+
+<link rel="stylesheet" href="~/css/mainPage.css" asp-append-version="true" />
+<script>
+    document.getElementById('joinRoomBtn').addEventListener('click', function () {
+        const errorSpan = document.getElementById('error-roomId');
+        const roomId = document.getElementById('roomId').value.trim().toLowerCase();
+        errorSpan.innerText = "";
+        if (!roomId) {
+            errorSpan.innerText = "ルームIDを入力してください。";
+            return;
+        }
+
+        // 非同期で部屋の人数を確認
+        fetch(`/Rooms/CheckRoomCapacity?roomId=${roomId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    // 最大人数を超えている場合、アラート表示
+                    errorSpan.innerText = data.message;
+                } else {
+                    // 人数が問題なければ部屋に参加
+                    window.location.href = `/Rooms/Join?roomId=${roomId}`;
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert("エラーが発生しました。再試行してください。");
+            });
+    });
+
+    function updateQuestionCountValue(value) {
+        document.getElementById(`questionCount-value`).textContent = value;
+    }
+
+</script>
+
+

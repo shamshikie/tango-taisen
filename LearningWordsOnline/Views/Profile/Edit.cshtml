@@ -1,0 +1,162 @@
+﻿@model LearningWordsOnline.Models.Profile
+@{
+    ViewData["Title"] = "Edit Profile";
+    ViewData["ShowMenuBar"] = true;
+    string username = ViewBag.UserName;
+    IEnumerable<Icon> icons = ViewBag.Icons; 
+}
+
+<div class="profile-container">
+    <form asp-action="Edit" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="@Model.IconId" />
+        <div class="profile-main">
+            <div class="profile-icon">
+                <img id="currentIcon" src="@Url.Content(Model.Icon?.Url ?? "/images/icons/gear.png")" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: contain;" alt="Profile Icon"/>
+                <div>
+                    <button type="button" class="btn btn-outline-brand mt-4" data-bs-toggle="modal" data-bs-target="#iconModal">Change</button>
+                </div>
+            </div>
+            <div class="profile-info">
+                <div class="form-group mb-2">
+                    <label asp-for="@Model.DisplayName" class="control-label"></label>
+                    <input asp-for="@Model.DisplayName" class="form-control" required aria-required="true">
+                    <span asp-validation-for="@Model.DisplayName" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-2">
+                    <label class="control-label">ユーザーネーム</label>
+                    <input class="form-control" disabled value="@username"/>
+                    @* <span asp-validation-for="@Model.UserName" class="text-danger"></span> *@
+                </div>
+                    <span asp-validation-for="@Model.IsPublic" class="text-danger d-block mt-2"></span>
+                <div class="form-group mb-2">
+                    <label asp-for="@Model.Bio" class="control-label"></label>
+                    <textarea asp-for="@Model.Bio" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="@Model.Bio" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check form-switch" >
+                    <label asp-for="@Model.IsPublic" class="form-check-label ms-2 toggle" for="flexSwitchCheckDefault" style="margin-top: 0.5rem;">
+                    <input asp-for="@Model.IsPublic" class="form-check-input toggle" type="checkbox" id="flexSwitchCheckDefault">
+                        プロフィールを公開する
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group mt-2 text-center">
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-brand">Save</button>
+        </div>
+    </form>
+</div>
+
+<!-- モーダル -->
+<div class="modal fade" id="iconModal" tabindex="-1" aria-labelledby="iconModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="iconModalLabel">Choose your icon</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="iconSelection" class="d-flex flex-wrap">
+                    @foreach (var icon in icons)
+                    {
+                        <img src="@Url.Content(icon.Url)"
+                             class="icon-option mx-2 my-1"
+                             data-icon-id="@icon.Id"
+                             style="cursor: pointer; width: 50px; height: 50px; border: 2px solid transparent;" />
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        // await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // アイコン選択処理
+        document.querySelectorAll('.icon-option').forEach(icon => {
+            icon.addEventListener('click', function () {
+                // 選択したアイコンのIDを非表示フィールドに設定
+                document.getElementById('IconId').value = this.dataset.iconId;
+
+                // 選択したアイコンをメインフォームに反映
+                document.getElementById('currentIcon').src = this.src;
+
+                // モーダルを閉じる
+                const modal = bootstrap.Modal.getInstance(document.getElementById('iconModal'));
+                modal.hide();
+            });
+        });
+    </script>
+}
+
+<style>
+    .profile-container {
+        position: relative;
+        background: linear-gradient(to bottom, white, white);
+        color: black;
+        padding: 20px;
+        padding-bottom: 5%;
+        text-align: center;
+    }
+
+    .profile-main {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        text-align: center;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+    }
+
+    .profile-icon {
+        flex: 0 0 auto; /* 必要なら固定幅 */
+        text-align: center; /* 中央揃え */
+    }
+
+    .profile-info {
+        flex: 1;
+        min-width: 250px;
+    }
+
+    .bio {
+        margin-top: 20px;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+        text-align: left;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    .form-group textarea {
+        resize: none;
+    }
+
+    button {
+        margin: 0 10px;
+    }
+
+    .toggle{
+        cursor:pointer;
+    }
+</style>

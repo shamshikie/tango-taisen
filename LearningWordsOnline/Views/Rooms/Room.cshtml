@@ -1,0 +1,370 @@
+﻿@using LearningWordsOnline.GameLogic
+@model LearningWordsOnline.ViewModels.RoomViewModel
+@{
+    ViewData["Title"] = "Room Match";
+    // var userId = HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    // int maxPlayerCount = ViewBag.MaxPlayerCount;
+    ViewData["ShowHeader"] = false;
+    string currentUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}{Context.Request.QueryString}";
+}
+
+<style>
+    #waiting-phase {
+    }
+
+    #roomId {
+        font-weight: bold;
+        color: #495057;
+    }
+
+    .friend-list {
+        max-height: 40vh;
+        overflow-y: auto;
+        list-style: none;
+    }
+
+    .friend-profile-icon {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+        margin-right: 15px;
+    }
+
+    .active-icon {
+        width: 10px;
+        height: 10px;
+        display: inline-block;
+        background-color: #62ce3b;
+    }
+
+    .inactive-icon {
+        width: 10px;
+        height: 10px;
+        display: inline-block;
+        background-color: #a7a9ae;
+    }
+
+    #playerList {
+        max-width: 500px;
+    }
+    /* プレイヤーカードのデザイン */
+    .player-card {
+        width: 180px;
+        height: 90px;
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+        color: #212529;
+        font-weight: bold;
+        text-align: center;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+        .player-card:hover {
+            /* transform: translateY(-5px); */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+    /* .player-number {
+            font-size: 1.1rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        } */
+
+    .waiting-player-icon {
+        width: 23%;
+        height: 46%;
+    }
+
+    .player-name {
+        font-size: 1.25rem;
+        margin: 0;
+    }
+
+    #quitButton {
+        background-color: #dc3545; /* btn-danger の背景色 */
+        color: white; /* ボタンテキスト色 */
+        border: 1px solid transparent; /* 初期状態のボーダー */
+        transition: all 0.2s ease; /* スムーズなアニメーション */
+    }
+
+        #quitButton:hover {
+            background-color: transparent; /* 背景を透明に */
+            color: #dc3545; /* テキスト色をbtn-outline-dangerと同じ赤に */
+            border: 1px solid #dc3545;
+        }
+
+    .copy-btn {
+        background: none; /* 背景色なし */
+        border: none; /* ボーダーを削除 */
+        font-size: 12px; /* フォントサイズを小さく */
+        color: #4E4E4E; /* アイコンとテキストの色 */
+        cursor: pointer; /* クリック可能に */
+        display: inline-flex; /* フレックスで横並び */
+        align-items: center; /* 垂直方向を中央揃え */
+        gap: 4px; /* アイコンとテキストの間隔を小さく */
+        padding: 2px 6px; /* パディングを調整 */
+        transition: color 0.2s ease, background-color 0.2s ease;
+    }
+
+        .copy-btn:hover {
+            color: #ff5733; /* ホバー時の色変更 */
+        }
+
+        .copy-btn span {
+            font-size: 14px; /* アイコンのサイズ */
+        }
+</style>
+
+<div id="user-data" data-user-id="@Model.AspNetUserId" data-room-id="@Model.RoomId"></div>
+<div class="title py-1 w-100 text-center my-1">
+    <div class="display-6 m-0 battle-page-title">@ViewData["Title"]</div>
+</div>
+<div id="waiting-phase" class="phase position-relative" hidden>
+    <!-- Room ID コピー用ボタン -->
+    <button class="copy-btn position-absolute" id="copy-room-id" style="top: 2%; right: 2%;">
+        <span id="copy-icon" class="material-symbols-outlined" style="font-size: 16px;">content_copy</span>
+        <small id="copy-text">Copy Room ID</small>
+    </button>
+    <h2 id="status" class="mt-3 text-brand">
+        <span id="status-message">Waiting for Host to Start</span><span class="loading-dots"></span>
+    </h2>
+    <div id="playerList" class="d-flex flex-wrap justify-content-evenly gap-3">
+        @for (int i = 0; i < Model.MaxPlayerCount; i++)
+        {
+            <div id="player-card-@i" class="player-card p-1">
+@*                 <p class="player-name">test</p> *@
+            </div>
+        }
+    </div>
+    <div class="spinner-border my-4" role="status" hidden>
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="buttons d-flex flex-row gap-0 justify-content-evenly w-75 sticky-bottom">
+        <form asp-action="Index">
+            <button id="quitButton" type="submit" class="btn btn-danger rounded-pill px-5 py-2">Exit</button>
+        </form>
+        <button id="start" type="button" class="btn btn-primary rounded-pill px-5 py-2" hidden>Start</button>
+    </div>
+    <button type="button" id="share-btn" class="btn btn-outline-brand rounded-circle shadow-lg position-absolute d-flex justify-content-center align-items-center"
+            style="bottom: 15%; right: 5%; width: 50px; height: 50px; z-index: 1;"
+            data-bs-toggle="modal" data-bs-target="#invitation" onclick="updateActiveStatus()">
+        <i class="bi bi-send-plus" style="font-size: 24px; padding: 0 3px 0 0"></i>
+    </button>
+    <!-- 招待用モーダル -->
+    <div class="modal fade" id="invitation" tabindex="-1" aria-labelledby="invitationLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="invitationLabel">Invite Friends</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <!-- 検索フィルター入力 -->
+                    <input type="text" id="friendSearch" class="form-control w-75 m-auto mb-3" placeholder="Search friends..." />
+                    <ul id="friendList" class="friend-list overflow-auto">
+                        @foreach (var item in Model.FriendViewModels.OrderBy(item => item.IsActive))
+                        {
+                        <li data-name="@item.FriendUser.Profile.DisplayName.ToLower()" class="friend-item mb-3">
+                            <div class="d-flex align-items-center justify-content-between pe-3">
+                                <div class="d-flex align-items-center">
+                                    <img src="@Url.Content(item.FriendUser.Profile.Icon?.Url ?? "/images/icons/gear.png")" class="rounded-circle friend-profile-icon" alt="Friend Icon" />
+                                    <div class="friend-info">
+                                        <div class="mb-1">
+                                            <div>@item.FriendUser.Profile.DisplayName</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="rounded-circle active-status @(item.IsActive ? "active-icon" : "inactive-icon") me-1" data-id="@item.FriendUser.Id">
+                                    </span>
+                                    <button class="btn btn-brand btn-invite mt-1 ms-4 flex-shrink-0" onclick="invite(@item.Id, this)" >Invite</button>
+                                </div>
+                            </div>
+                        </li>
+                        }
+                    </ul>
+                    <!-- Shareボタン（ドロップダウンのトリガー） -->
+                    <div class="dropdown">
+                        <button class="btn btn-outline-brand share-btn dropdown-toggle" type="button" id="shareDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-share"></i>
+                        </button>
+                        <!-- ドロップダウンメニュー -->
+                        <ul class="dropdown-menu" aria-labelledby="shareDropdown">
+                            <!-- URLコピー -->
+                            <li>
+                                <button class="dropdown-item" id="copy-url-btn" data-url="@currentUrl">
+                                    <i class="bi bi-clipboard"></i> Copy URL
+                                </button>
+                            </li>
+                            <!-- 部屋IDコピー -->
+                            <li>
+                                <button class="dropdown-item" id="copy-room-id-btn" data-room-id="@Model.RoomId">
+                                    <i class="bi bi-clipboard-check"></i> Copy Room ID
+                                </button>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <!-- SNS共有 -->
+                            <li>
+                                <a class="dropdown-item" id="line-share" href="https://social-plugins.line.me/lineit/share?url=@currentUrl" target="_blank" rel="nofollow noopener noreferrer">
+                                    <i class="fa-brands fa-line"></i> Share on Line
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" id="twitter-share" href="http://twitter.com/intent/tweet?url=@currentUrl&text=Join+my+room!&hashtags=Wordify" target="_blank" rel="nofollow noopener noreferrer">
+                                    <i class="fa-brands fa-x-twitter"></i> Share on X
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" id="facebook-share" href="https://www.facebook.com/share.php?u=@currentUrl" target="_blank">
+                                    <i class="bi bi-facebook"></i> Share on Facebook
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <!-- Email共有 -->
+                            <li>
+                                <a class="dropdown-item" id="email-share" href="mailto:?subject=Join%20my%20room!&body=Join%20my%20room%20here:%20@(currentUrl)">
+                                    <i class="bi bi-envelope"></i> Share via Email
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="game-phase" class="phase" hidden>
+    <div class="container">
+        <div class="row justify-content-center">
+            <!-- プレイヤー情報エリア -->
+            <div id="players-area" class="d-flex flex-wrap justify-content-center">
+                <!-- プレイヤー情報はここに動的に挿入される -->
+            </div>
+        </div>
+    </div>
+    <div id="question"></div>
+    <div id="timer-container" hidden>
+        <div id="timer-bar" hidden></div>
+        <div id="timer-text" hidden></div>
+    </div>
+    <div id="options" class="button-grid"></div>
+    <!-- 質問番号表示 -->
+    <div id="question-counter" class="question-counter"></div>
+</div>
+
+<div id="result-phase" class="phase" hidden>
+    <div class="text-center text-brand fs-1 fw-bold">
+        RESULTS
+        <hr class="text-brand" />
+    </div>
+    <div id="results-area" class="align-items-center gap-1"></div>
+    <div class="buttons d-flex flex-row gap-0 justify-content-evenly w-75 sticky-bottom">
+        <button id="goWaiting" disabled class="btn btn-outline-brand rounded-pill px-5 py-2 my-3">Next</button>
+    </div>
+</div>
+
+<link rel="stylesheet" href="~/css/quiz.css" asp-append-version="true" />
+
+@* <script src="~/js/signalr/dist/browser/signalr.js"></script> *@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script type="module" src="~/js/quiz.js" asp-append-version="true"></script>
+<script type="module" src="~/js/room.js" asp-append-version="true"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const searchInput = document.getElementById('friendSearch');
+        const friendList = document.getElementById('friendList');
+        const friends = friendList.querySelectorAll('.friend-item');
+
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.trim().toLowerCase();
+            friends.forEach(friend => {
+                const name = friend.getAttribute('data-name');
+                if (name.includes(query)) {
+                    friend.style.display = 'block'; // 表示
+                } else {
+                    friend.style.display = 'none'; // 非表示
+                }
+            });
+        });
+    });
+
+    async function invite(friendId, button){
+        button.disabled = true;
+        const formData = new FormData();
+        formData.append("friendId", friendId);
+        formData.append("roomId", document.getElementById('user-data').dataset.roomId);
+        const options = {
+            method: "POST",
+            url: `/api/RoomInvitations/Invite`,
+            data: formData
+        };
+
+        try {
+            const response = await axios(options);
+            if (response.status === 200) {
+                button.classList.replace('btn-brand', 'btn-secondary');
+                button.disabled = true;
+                console.log('招待しました。');
+            } else {
+                button.classList.replace('btn-brand', 'btn-outline-brand');
+                button.disabled = false;
+                console.log('招待に失敗しました。');
+            }
+        } catch (error) {
+            console.error('エラーが発生しました', error);
+            button.classList.replace('btn-brand', 'btn-outline-brand');
+            button.disabled = false;
+        }
+    }
+
+    async function updateActiveStatus(){
+        const url = "/Friends/GetFriendActivities";
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Response Error: ${response.status}`);
+            }
+
+            const json = await response.json();
+            const userStatuses = document.querySelectorAll('.active-status');
+            const friendItems = document.querySelectorAll('.friend-item');
+            console.log(json);
+            json.forEach(status => {
+                const element = Array.from(userStatuses).find(item => item.getAttribute('data-id') == status.id);
+                if (element) {
+                if (status.isActive) {
+                    element.classList.remove('inactive-icon');
+                    element.classList.add('active-icon');
+                } else {
+                    element.classList.remove('active-icon');
+                    element.classList.add('inactive-icon');
+                }
+                }
+            });
+
+            // li要素をactive-iconがついている順に並べ替え
+            const sortedItems = Array.from(friendItems).sort((a, b) => {
+                const aIsActive = a.querySelector('.active-status').classList.contains('active-icon');
+                const bIsActive = b.querySelector('.active-status').classList.contains('active-icon');
+
+                // active-iconがついている要素を上に持ってくる
+                return bIsActive - aIsActive; // true (1) が先に来るように
+            });
+            console.log(sortedItems);
+
+            // 並べ替えたリストをDOMに反映
+            const parentElement = document.querySelector('.friend-list'); // li要素の親要素
+            parentElement.innerHTML = '';
+            sortedItems.forEach(item => parentElement.appendChild(item));
+            console.log("成功");
+        } catch (error) {
+          console.error(error.message);
+        }
+    }
+</script>

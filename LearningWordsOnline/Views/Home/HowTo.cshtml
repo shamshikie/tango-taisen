@@ -1,0 +1,271 @@
+﻿@{
+    ViewData["Title"] = "How to play";
+    ViewData["ShowMenuBar"] = true;
+}
+<style>
+</style>
+<style>
+    .nav-tabs {
+        border-bottom: 2px solid #ff5733;
+    }
+
+        .nav-tabs .nav-link {
+            color: #ff5733;
+            font-weight: bold;
+        }
+
+            .nav-tabs .nav-link.active {
+                background-color: #ff5733;
+                color: white;
+                border: none;
+            }
+
+    .tab-content {
+        background: white;
+        border: 1px solid #ddd;
+        border-top: none;
+        padding: 20px;
+        border-radius: 0 0 8px 8px;
+    }
+
+    img {
+        max-width: 800px;
+        width: 90%;
+    }
+
+    .accordion-button:not(.collapsed){
+        background-color: #ffe6e0;
+    }
+</style>
+<div class="container mt-4 mb-5">
+    <div class="text-center mb-4">
+        <h1 class="page-title">@ViewData["Title"]</h1>
+    </div>
+    <ul class="nav nav-tabs" id="howToPlayTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="outline-tab" data-bs-toggle="tab" data-bs-target="#outline" type="button" role="tab" aria-controls="outline" aria-selected="true">OUTLINE</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="playguide-tab" data-bs-toggle="tab" data-bs-target="#playguide" type="button" role="tab" aria-controls="playguide" aria-selected="false">PLAYGUIDE</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="rank-tab" data-bs-toggle="tab" data-bs-target="#rank" type="button" role="tab" aria-controls="rank" aria-selected="false">RANK</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="faq-tab" data-bs-toggle="tab" data-bs-target="#faq" type="button" role="tab" aria-controls="faq" aria-selected="false">FAQ</button>
+        </li>
+    </ul>
+    <div class="tab-content pb-3" id="howToPlayTabsContent">
+        <div class="tab-pane fade show active" id="outline" role="tabpanel" aria-labelledby="outline-tab">
+            <h3 class="ms-2 text-left text-brand fs-2">OUTLINE</h3>
+            <hr />
+            <img src="~/images/howtoplay/outline_1.png" class="d-block w-100 m-auto border rounded mb-4" alt="ゲームプレイ画像1">
+            <p class="fw-bold">
+                <strong>Wordify</strong>はWebブラウザでプレイできる、最大4人で対戦可能なオンライン英単語アプリです。<br />
+                ルールはシンプルで、制限時間内に出題される単語の正しい翻訳を選択肢から選ぶだけで正解となります。<br />
+                正解するたびにポイントを獲得でき、最終的に最も多くのポイントを獲得したプレイヤーが勝者となります。
+            </p>
+            <h3 class="ms-2 text-left text-brand">ゲームモード</h3>
+            <p>
+                Wordifyには、以下の3つのモードが用意されています：<br />
+                <ul>
+					<li><strong>ランクマッチ</strong> <br /><p>ランダムに選ばれたプレイヤーと対戦し、順位に応じてランクポイントが変動します。一定のランクポイントを集めるとランクアップが可能です。</p></li>
+                    <li><strong>ルームマッチ</strong> <br /> <p>自分または他のプレイヤーが作成した部屋で、友達や家族といった任意の相手と一緒に対戦ができるモードです。</p></li>
+                    <li><strong>トレーニングモード</strong> <br /><p>個人練習用のモードで、対戦中に間違えた単語やカテゴリ別、レベル別の問題を選んで練習できます。</p></li>
+                </ul>
+            </p>
+        </div>
+        <div class="tab-pane fade" id="playguide" role="tabpanel" aria-labelledby="playguide-tab">
+            <h3 class="ms-2 text-left text-brand fs-2">PLAYGUIDE</h3>
+            <hr />
+            <h3 class="ms-2 text-center text-brand mb-3 fs-3">バトル画面の見方</h3>
+            <img src="~/images/howtoplay/playguide_1.png" class="d-block w-100 m-auto border rounded mt-1 mb-4" alt="ゲームプレイ画像1">
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <strong>① プレイヤー情報エリア</strong><br />
+                            対戦中のプレイヤーのアイコン、名前、現在のポイントが表示されます。
+                        </li>
+                        <li class="list-group-item">
+                            <strong>② プレイヤー (あなた) </strong><br />
+                            あなたのプレイヤー名は<span class="text-brand fw-bold">この色</span>のテキストで表示されます。
+                        </li>
+                        <li class="list-group-item">
+                            <strong>③ ポイント</strong><br />
+                            現在の獲得ポイントを確認できます。正解の場合は加算、不正解の場合は減少、無回答の場合は変化しません。
+                        </li>
+                        <li class="list-group-item">
+                            <strong>④ 出題単語</strong><br />
+                            問題の単語が中央に表示されます。この単語に対応する正しい翻訳を選択肢から選びます。
+                        </li>
+                        <li class="list-group-item">
+                            <strong>⑤ タイムバー</strong><br />
+                            制限時間を視覚的に示します。
+                        </li>
+                        <li class="list-group-item">
+                            <strong>⑥ 選択肢エリア</strong><br />
+                            問題の単語に対する翻訳の選択肢が表示されます。
+                        </li>
+                        <li class="list-group-item">
+                            <strong>⑦ 選択肢（不正解の例）</strong><br />
+                            <span class="text-danger fw-bold">この色</span>の選択肢は不正解を示します。
+                        </li>
+                        <li class="list-group-item">
+                            <strong>⑧ 選択肢（正解の例）</strong><br />
+                            <span class="text-success fw-bold">この色</span>の選択肢は正解を示します。
+                        </li>
+                        <li class="list-group-item">
+                            <strong>⑨ 問題進行情報</strong><br />
+                            現在の問題番号と全体の問題数が表示されます。例：3/5は5問中3問目を意味します。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="rank" role="tabpanel" aria-labelledby="rank-tab">
+            <h3 class="ms-2 text-left  text-brand fs-2">RANK</h3>
+            <hr />
+            <p class="fw-bold">
+                以下の表は、ランクポイントとランクの関係を示しています。自分のランクを確認して目標を立てよう！
+            </p>
+            <table class="table table-bordered table-striped mt-3">
+                <thead>
+                    <tr>
+                        <th scope="col">Rank</th>
+                        <th scope="col">ランクポイント範囲</th>
+                        <th scope="col">学年レベルの目安</th>
+                        <th scope="col">備考</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>A+</td>
+                        <td>1100~</td>
+                        <td>大学以上</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>A</td>
+                        <td>1000~1099</td>
+                        <td>大学以上</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>A-</td>
+                        <td>900~999</td>
+                        <td>大学以上</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>B+</td>
+                        <td>800~899</td>
+                        <td>高校</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>B</td>
+                        <td>700~799</td>
+                        <td>高校</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>B-</td>
+                        <td>600~699</td>
+                        <td>高校</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>C+</td>
+                        <td>500~599</td>
+                        <td>中学校</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>C</td>
+                        <td>400~499</td>
+                        <td>中学校</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>C-</td>
+                        <td>300~399</td>
+                        <td>中学校</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>D+</td>
+                        <td>200~299</td>
+                        <td>小学校</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>D</td>
+                        <td>100~199</td>
+                        <td>小学校</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>D-</td>
+                        <td>0~99</td>
+                        <td>小学校</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane fade" id="faq" role="tabpanel" aria-labelledby="faq-tab">
+            <h3 class="ms-2 text-left text-brand fs-2">FAQ (よくある質問)</h3>
+            <hr />
+            <div class="accordion" id="faqAccordion">
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Q: ゲームをプレイするのに料金はかかりますか？
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse show" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body fw-bold">
+                            基本的なプレイは無料です。ただし、一部の追加コンテンツやアイテムは有料となります。課金要素はプレイには直接影響しないため、無料プレイでも十分に楽しめます。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Q: 他のプレイヤーと対戦できますか？
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body fw-bold">
+                            はい、このゲームにはオンライン対戦機能があり、世界中のプレイヤーとリアルタイムで対戦できます。<br>
+                            ランクマッチはランダムなプレイヤーと対戦、ルームマッチは部屋を作ることで好きな相手と対戦することができます。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Q: ランクポイントはどのように計算されますか？
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body  fw-bold">
+                            ランクポイントは、ランクマッチの対戦結果に基づいて計算されます。<br />
+                            1位、2位の場合はそれぞれ20ポイント、10ポイント加算され、3位、4位はそれぞれ10、20ポイント減少します。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2025 Example Company. All Rights Reserved.</p>
+</footer>
+
+<link rel="stylesheet" href="~/css/mainPage.css" asp-append-version="true" />

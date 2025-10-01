@@ -1,0 +1,103 @@
+﻿.content-title {
+    margin-bottom: 10px;
+}
+
+.profile-container {
+    position: relative; /* 親コンテナを相対位置に */
+    background: linear-gradient(to bottom, white, white);
+    color: black;
+    padding: 20px;
+    margin: 20px 5% 0 5%;
+    text-align: center;
+    border-radius: 20px 20px 20px 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+    .profile-container img {
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+        margin-bottom: 1%;
+    }
+
+    .profile-container h1 {
+        margin: 5px 0;
+        font-size: 2rem;
+    }
+
+    .profile-container p {
+        margin: 5px 0;
+        font-size: 1rem;
+    }
+
+    .profile-container .rank {
+        background: #ff5733;
+        color: white;
+        border-radius: 25px;
+        padding: 5px 20px;
+        display: inline-block;
+        margin-top: 10px;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+
+    .profile-container .profile-main {
+        text-align: center; /* テキストも中央揃え */
+        border-bottom: 1px solid #ccc;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+    }
+
+.profile-icon {
+    flex: 0 0 auto; /* 必要なら固定幅 */
+    text-align: center; /* 中央揃え */
+}
+
+.profile-container .profile-bio {
+    font-size: 1.1rem;
+    text-align: left;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.profile-action {
+    width: 45px; /* 真円の幅 */
+    height: 45px; /* 真円の高さ */
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.edit-profile-btn {
+    display: flex; /* Flexboxを使用 */
+    width: 100%; /* 親要素の幅に合わせる */
+    height: 100%; /* 親要素の高さに合わせる */
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+}
+
+.content-container {
+    background-color: #f9f9f9;
+    border: 5px solid #ccc;
+    padding: 20px;
+    margin: 5% 5%;
+    border-radius: 20px 20px 20px 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+    .content-container h2 {
+        font-size: 2rem;
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 10px;
+        /* border-bottom: 1px solid #ccc; */
+    }
+
+.content-main {
+    font-size: 1.1rem;
+    color: #666;
+    line-height: 1.7;
+    text-align: left;
+}
