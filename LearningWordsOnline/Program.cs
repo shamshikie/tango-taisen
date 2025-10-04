@@ -23,8 +23,7 @@ builder.Services.AddScoped<IAppUserService, AppUserService>();
 builder.Services.AddScoped<IQuizService, QuizService>();
 // セッションで利用するキャッシュサービスを登録
 builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
-{
+builder.Services.AddSession(options => {
     const int timeoutSeconds = 2;
     //Trainingページのみでセッションを使用
     options.Cookie.Path = "/Training";
@@ -39,12 +38,9 @@ builder.Services.AddControllersWithViews();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+if (app.Environment.IsDevelopment()) {
     app.UseMigrationsEndPoint();
-}
-else
-{
+} else {
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
@@ -55,6 +51,67 @@ app.UseHttpsRedirection();
 app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
 
 app.UseStaticFiles();
+
+// セキュリティヘッダーのポリシーを定義
+var policy = new HeaderPolicyCollection()
+    .AddDefaultSecurityHeaders()
+    .AddContentSecurityPolicy(builder => {
+        // デフォルトは自分自身のみ許可
+        builder.AddDefaultSrc().Self();
+
+        // Script
+        builder.AddScriptSrc().Self()
+               .From("https://cdn.jsdelivr.net")
+               .From("https://cdnjs.cloudflare.com")
+               .From("https://js.monitor.azure.com")
+               .UnsafeInline();
+
+        // Style
+        builder.AddStyleSrc().Self()
+               .From("https://cdn.jsdelivr.net")
+               .From("https://cdnjs.cloudflare.com")
+               .From("https://fonts.googleapis.com")
+               .UnsafeInline();
+
+        // Font
+        builder.AddFontSrc().Self()
+               .From("https://fonts.gstatic.com")
+               .From("https://cdn.jsdelivr.net")
+               .From("https://cdnjs.cloudflare.com");
+
+        // Image
+        builder.AddImgSrc().Self().Data();
+
+        // 開発環境のみ localhost の http/ws を許可
+        if (app.Environment.IsDevelopment()) {
+            builder.AddConnectSrc().Self()
+                .From("https://localhost:*")
+                .From("http://localhost:*")
+                .From("wss://localhost:*")
+                .From("ws://localhost:*")
+                .From("https://cdn.jsdelivr.net")
+                .From("https://cdnjs.cloudflare.com");
+        } else {
+            builder.AddConnectSrc().Self()
+                .From("https://cdn.jsdelivr.net")
+                .From("https://cdnjs.cloudflare.com")
+                .From("https://js.monitor.azure.com")
+                .From("https://japanwest-0.in.applicationinsights.azure.com");
+        }
+
+        // その他セキュリティ
+        builder.AddObjectSrc().None();
+        builder.AddFrameAncestors().None();
+        builder.AddBaseUri().Self();
+    })
+    .AddStrictTransportSecurityMaxAgeIncludeSubDomainsAndPreload()
+    .AddContentTypeOptionsNoSniff()
+    .AddFrameOptionsDeny()
+    .AddXssProtectionBlock()
+    .AddReferrerPolicyStrictOriginWhenCrossOrigin()
+    .AddCustomHeader("Cross-Origin-Resource-Policy", "same-origin");
+
+app.UseSecurityHeaders(policy);
 
 app.UseRouting();
 
