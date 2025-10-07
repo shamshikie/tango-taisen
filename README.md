@@ -142,6 +142,10 @@ dotnet run
 ```
 詳細は [LearningWordsOnline/README.md](LearningWordsOnline/README.md) を参照してください。
 
+## ⚠️ 注意事項
+これは学習目的で開発した初めてのWebアプリです。
+そのため、CSRF、XSS、CSPといったセキュリティ対策が十分にできていません。余裕があれば修正するかもしれません。
+
 ## 📄 ライセンス
 このプロジェクトはMITライセンスの下でライセンスされています。
 
