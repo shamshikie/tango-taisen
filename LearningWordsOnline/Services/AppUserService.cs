@@ -1,7 +1,6 @@
 ﻿using LearningWordsOnline.Data;
 using LearningWordsOnline.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 

@@ -8,7 +8,6 @@ using System.Text.Json;
 using System.Security.Claims;
 using LearningWordsOnline.GameLogic;
 using Microsoft.AspNetCore.Http;
-using Microsoft.IdentityModel.Tokens;
 
 namespace LearningWordsOnline.Controllers
 {
