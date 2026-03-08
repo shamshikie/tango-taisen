@@ -10,24 +10,24 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseNpgsql(connectionString));
 builder.Services.AddDbContext<LearningWordsOnlineDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseNpgsql(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddErrorDescriber<JapaneseIdentityErrorDescriber>(); // ƒJƒXƒ^ƒ€ƒGƒ‰[ƒƒbƒZ[ƒW‚ğ“K—p
+    .AddErrorDescriber<JapaneseIdentityErrorDescriber>(); // ï¿½Jï¿½Xï¿½^ï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½bï¿½Zï¿½[ï¿½Wï¿½ï¿½Kï¿½p
 builder.Services.AddSignalR();
 builder.Services.AddScoped<IAppUserService, AppUserService>();
 builder.Services.AddScoped<IQuizService, QuizService>();
-// ƒZƒbƒVƒ‡ƒ“‚Å—˜—p‚·‚éƒLƒƒƒbƒVƒ…ƒT[ƒrƒX‚ğ“o˜^
+// ï¿½Zï¿½bï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Å—ï¿½ï¿½pï¿½ï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½bï¿½Vï¿½ï¿½ï¿½Tï¿½[ï¿½rï¿½Xï¿½ï¿½oï¿½^
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options => {
     const int timeoutSeconds = 2;
-    //Trainingƒy[ƒW‚Ì‚İ‚ÅƒZƒbƒVƒ‡ƒ“‚ğg—p
+    //Trainingï¿½yï¿½[ï¿½Wï¿½Ì‚İ‚ÅƒZï¿½bï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½p
     options.Cookie.Path = "/Training";
-    options.IdleTimeout = TimeSpan.FromSeconds(timeoutSeconds); //ƒZƒbƒVƒ‡ƒ“‚Ìƒ^ƒCƒ€ƒAƒEƒgŠÔ
+    options.IdleTimeout = TimeSpan.FromSeconds(timeoutSeconds); //ï¿½Zï¿½bï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Ìƒ^ï¿½Cï¿½ï¿½ï¿½Aï¿½Eï¿½gï¿½ï¿½ï¿½ï¿½
     options.Cookie.IsEssential = false;
     options.Cookie.HttpOnly = true;
     options.Cookie.SameSite = SameSiteMode.Strict;
@@ -36,6 +36,11 @@ builder.Services.AddSession(options => {
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope()) {
+    scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.Migrate();
+    scope.ServiceProvider.GetRequiredService<LearningWordsOnlineDbContext>().Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
@@ -47,23 +52,22 @@ if (app.Environment.IsDevelopment()) {
 }
 
 app.UseHttpsRedirection();
-// ‘¶İ‚µ‚È‚¢ƒy[ƒW‚ÉƒAƒNƒZƒX
+// ï¿½ï¿½ï¿½İ‚ï¿½ï¿½È‚ï¿½ï¿½yï¿½[ï¿½Wï¿½ÉƒAï¿½Nï¿½Zï¿½X
 app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
 
 app.UseStaticFiles();
 
-// ƒZƒLƒ…ƒŠƒeƒBƒwƒbƒ_[‚Ìƒ|ƒŠƒV[‚ğ’è‹`
+// ï¿½Zï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½eï¿½Bï¿½wï¿½bï¿½_ï¿½[ï¿½Ìƒ|ï¿½ï¿½ï¿½Vï¿½[ï¿½ï¿½ï¿½`
 var policy = new HeaderPolicyCollection()
     .AddDefaultSecurityHeaders()
     .AddContentSecurityPolicy(builder => {
-        // ƒfƒtƒHƒ‹ƒg‚Í©•ª©g‚Ì‚İ‹–‰Â
+        // ï¿½fï¿½tï¿½Hï¿½ï¿½ï¿½gï¿½Íï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½Ì‚İ‹ï¿½ï¿½ï¿½
         builder.AddDefaultSrc().Self();
 
         // Script
         builder.AddScriptSrc().Self()
                .From("https://cdn.jsdelivr.net")
                .From("https://cdnjs.cloudflare.com")
-               .From("https://js.monitor.azure.com")
                .UnsafeInline();
 
         // Style
@@ -82,7 +86,7 @@ var policy = new HeaderPolicyCollection()
         // Image
         builder.AddImgSrc().Self().Data();
 
-        // ŠJ”­ŠÂ‹«‚Ì‚İ localhost ‚Ì http/ws ‚ğ‹–‰Â
+        // ï¿½Jï¿½ï¿½ï¿½Â‹ï¿½ï¿½Ì‚ï¿½ localhost ï¿½ï¿½ http/ws ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (app.Environment.IsDevelopment()) {
             builder.AddConnectSrc().Self()
                 .From("https://localhost:*")
@@ -94,12 +98,10 @@ var policy = new HeaderPolicyCollection()
         } else {
             builder.AddConnectSrc().Self()
                 .From("https://cdn.jsdelivr.net")
-                .From("https://cdnjs.cloudflare.com")
-                .From("https://js.monitor.azure.com")
-                .From("https://japanwest-0.in.applicationinsights.azure.com");
+                .From("https://cdnjs.cloudflare.com");
         }
 
-        // ‚»‚Ì‘¼ƒZƒLƒ…ƒŠƒeƒB
+        // ï¿½ï¿½ï¿½Ì‘ï¿½ï¿½Zï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½eï¿½B
         builder.AddObjectSrc().None();
         builder.AddFrameAncestors().None();
         builder.AddBaseUri().Self();
@@ -116,9 +118,9 @@ app.UseSecurityHeaders(policy);
 app.UseRouting();
 
 app.UseAuthorization();
-// SessionMiddleware‚ğ“o˜^
+// SessionMiddlewareï¿½ï¿½oï¿½^
 app.UseSession();
-// ÅIƒƒOƒCƒ“‚Ì‹L˜^ iƒŠƒNƒGƒXƒg‚ª”ò‚Ô‚½‚Ñ‚ÉŠm”F
+// ï¿½ÅIï¿½ï¿½ï¿½Oï¿½Cï¿½ï¿½ï¿½Ì‹Lï¿½^ ï¿½iï¿½ï¿½ï¿½Nï¿½Gï¿½Xï¿½gï¿½ï¿½ï¿½ï¿½Ô‚ï¿½ï¿½Ñ‚ÉŠmï¿½F
 app.UseMiddleware<LastLoginMiddleware>();
 
 app.MapControllerRoute(
