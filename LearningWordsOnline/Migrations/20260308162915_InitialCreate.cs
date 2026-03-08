@@ -18,8 +18,8 @@ namespace LearningWordsOnline.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AspNetUserId = table.Column<string>(type: "NVARCHAR(450)", maxLength: 450, nullable: false),
-                    Email = table.Column<string>(type: "NVARCHAR(256)", maxLength: 250, nullable: false),
+                    AspNetUserId = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false),
+                    Email = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
                     UserName = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)

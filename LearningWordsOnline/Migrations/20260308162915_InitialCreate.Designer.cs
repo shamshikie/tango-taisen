@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LearningWordsOnline.Migrations
 {
     [DbContext(typeof(LearningWordsOnlineDbContext))]
-    [Migration("20260308132609_InitialCreate")]
+    [Migration("20260308162915_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -36,7 +36,7 @@ namespace LearningWordsOnline.Migrations
                     b.Property<string>("AspNetUserId")
                         .IsRequired()
                         .HasMaxLength(450)
-                        .HasColumnType("NVARCHAR(450)");
+                        .HasColumnType("character varying(450)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -44,7 +44,7 @@ namespace LearningWordsOnline.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(250)
-                        .HasColumnType("NVARCHAR(256)");
+                        .HasColumnType("character varying(250)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");

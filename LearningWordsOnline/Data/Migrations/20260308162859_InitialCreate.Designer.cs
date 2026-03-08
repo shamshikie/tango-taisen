@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LearningWordsOnline.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260308132551_InitialCreate")]
+    [Migration("20260308162859_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
