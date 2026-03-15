@@ -7,7 +7,7 @@
     ViewData["ShowHeader"] = false;
 }
 
-<div id="questions-container" data-questions="@Json.Serialize(Model)"></div>
+<script id="questions-container" type="application/json">@Json.Serialize(Model)</script>
 <div id="settings-data" data-timer="@ViewBag.Timer"></div>
 
 <div class="title py-1 w-100 text-center my-1">
