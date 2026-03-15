@@ -2,7 +2,7 @@
 
 英単語学習をリアルタイムオンライン対戦形式で楽しめるWebアプリケーション
 
-[![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
+[![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
 [![C#](https://img.shields.io/badge/C%23-12.0-239120?logo=csharp)](https://learn.microsoft.com/dotnet/csharp/)
 [![SignalR](https://img.shields.io/badge/SignalR-WebSocket-00ADD8)](https://dotnet.microsoft.com/apps/aspnet/signalr)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-4169E1?logo=postgresql)](https://neon.tech/)
@@ -53,7 +53,7 @@
 
 ### バックエンド
 
-- **ASP.NET Core 8.0** - Webフレームワーク
+- **ASP.NET Core 10.0** - Webフレームワーク
 - **SignalR** - リアルタイム通信
 - **Entity Framework Core** - ORM
 - **PostgreSQL (Neon)** - データベース（開発時はSQL Server、本番環境向けにPostgreSQLへ移行）
@@ -145,7 +145,7 @@ tango-taisen/
 
 ### 必要な環境
 
-- .NET 8.0 SDK
+- .NET 10.0 SDK
 - PostgreSQL（またはNeon接続文字列）
 
 **クイックスタート**

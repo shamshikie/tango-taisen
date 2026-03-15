@@ -396,7 +396,7 @@ ASP.NET Core 個人認証用テーブルとアプリ専用のAppUserテーブル
 
 DB設計
 ----
-**[docs/ERdiagram.pdf.md](LearningWordsOnline/README.md) に記載**
+**[docs/ERdiagram.pdf](LearningWordsOnline/README.md) に記載**
 
 使用環境
 ----
