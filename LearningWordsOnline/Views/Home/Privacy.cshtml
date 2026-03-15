@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "プライバシーポリシー (仮)";
+    ViewData["Title"] = "プライバシーポリシー";
     ViewData["ShowMenuBar"] = true;
 }
 
@@ -85,60 +85,71 @@
 <div class="main-container pb-5 mb-5">
 <div class="text-center mb-5">
     <h1 class="page-title">@ViewData["Title"]</h1>
+    <p class="text-muted">最終更新日: 2025年</p>
 </div>
+
+    <section>
+        <h2>はじめに</h2>
+        <p>本サービス「単語対戦」は学習目的で制作されたデモアプリケーションです。商用サービスではなく、本番運用を目的としたものではありません。</p>
+    </section>
+
     <section>
         <h2>1. 収集する情報</h2>
-        <p>当サイトでは、以下の情報を収集することがあります：</p>
+        <p>アカウント登録時に以下の情報を収集します：</p>
         <ul>
-            <li>名前、メールアドレスなどの個人情報</li>
-            <li>利用者のIPアドレス、ブラウザの種類、アクセス日時などのアクセス情報</li>
-            <li>クッキーを使用して、利用者の訪問履歴や設定情報を収集</li>
+            <li>ユーザー名</li>
+            <li>メールアドレス（登録時のみ）</li>
+            <li>パスワード（ハッシュ化して保存）</li>
+            <li>プロフィール情報（表示名・アイコン）</li>
+        </ul>
+        <p>また、サービス利用に伴い以下の情報が自動的に記録されます：</p>
+        <ul>
+            <li>バトル履歴・スコア</li>
+            <li>ログイン日時</li>
         </ul>
     </section>
 
     <section>
         <h2>2. 情報の利用目的</h2>
-        <p>収集した情報は、以下の目的で利用されます：</p>
+        <p>収集した情報は、以下の目的のみに利用します：</p>
         <ul>
-            <li>サービスの提供や運営のため</li>
-            <li>サービスの改善や新機能の開発</li>
-            <li>お問い合わせ対応やサポート業務</li>
-            <li>マーケティングや分析活動</li>
+            <li>ゲーム機能の提供（マッチング・スコア管理）</li>
+            <li>アカウント認証</li>
         </ul>
+        <p>マーケティング・広告目的での利用は一切行いません。</p>
     </section>
 
     <section>
         <h2>3. 情報の第三者提供</h2>
-        <p>収集した情報は、法令に基づく場合を除き、第三者に提供することはありません。</p>
+        <p>収集した情報は第三者に提供・販売しません。</p>
     </section>
 
     <section>
         <h2>4. クッキーについて</h2>
-        <p>当サイトでは、クッキーを使用して、利用者のサイト利用情報を収集しています。クッキーは、ブラウザの設定で無効にすることができますが、無効にした場合、サイトの一部の機能が利用できなくなることがあります。</p>
+        <p>本サービスでは、ログインセッションの維持を目的としてクッキーを使用しています。トラッキングや広告目的のクッキーは使用していません。</p>
     </section>
 
     <section>
-        <h2>5. セキュリティ</h2>
-        <p>当サイトは、利用者の個人情報を保護するために適切なセキュリティ対策を講じています。ただし、インターネット上での情報送信には完全なセキュリティを保証することはできません。</p>
+        <h2>5. データの保管</h2>
+        <p>データはNeon（PostgreSQL）に保管されています。本サービスはデモ目的のため、予告なくデータが削除・リセットされる場合があります。重要な情報の保管には使用しないでください。</p>
     </section>
 
     <section>
-        <h2>6. プライバシーポリシーの変更</h2>
-        <p>本ポリシーは、法令の改正やサービスの変更に伴い、予告なく変更されることがあります。変更があった場合には、当サイトにてお知らせします。</p>
+        <h2>6. アカウントの削除</h2>
+        <p>アカウントおよび関連データの削除を希望される場合は、下記連絡先までお問い合わせください。</p>
     </section>
 
     <section>
         <h2>7. お問い合わせ</h2>
-        <p>プライバシーポリシーに関するご質問やご意見がありましたら、以下の連絡先までお問い合わせください：</p>
-        <p>Email: <a href="mailto:support@example.com">support@example.com</a></p>
+        <p>プライバシーポリシーに関するご質問は GitHub までお問い合わせください：</p>
+        <p><a href="https://github.com/shamshikie" target="_blank" rel="noopener noreferrer">https://github.com/shamshikie</a></p>
     <button id="backToTop" class="back-to-top justify-content-center"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
     </section>
 </div>
 <br>
 <footer class="pt-2 mt-4 mb-2">
-    <p>&copy; 2025 Example Company. All Rights Reserved.</p>
-</footer>
-<link rel="stylesheet" href="~/css/mainPage.css" asp-append-version="true" />
+    <p>&copy; 2025 shamshikie. All Rights Reserved.</p>
+</footer><link rel="stylesheet" href="~/css/mainPage.css" asp-append-version="true" />
 <script>
     const backToTopButton = document.getElementById('backToTop');
     backToTopButton.addEventListener('click', function () {
