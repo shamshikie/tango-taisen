@@ -417,7 +417,7 @@ async function initializeRankCalcUI() {
 }
 
 async function fetchRankAlphabet(rankPoints) {
-    if (!rankPoints) {
+    if (rankPoints == null) {
         console.error("rankPoints is null or undefined");
         return null;
     }
