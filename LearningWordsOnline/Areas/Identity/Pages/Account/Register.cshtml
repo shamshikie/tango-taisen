@@ -45,43 +45,13 @@
         </section>
     </div>
 
-    <!-- 外部アカウントでの登録 -->
-    <div class="col-md-6 col-md-offset-2">
-            <section class="card shadow p-4">
-                <h3 class="text-center mb-4 text-brand">外部サービスで登録</h3>
-                <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <div>
-                            <p class="text-center">
-                                外部認証サービスが構成されていません。
-                                <a href="https://go.microsoft.com/fwlink/?LinkID=532715">こちらの記事</a>を参照してください。
-                            </p>
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-brand" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
-    </div>
+    @* TODO: GitHub OAuthでの登録を実装する
+       メール重複（ローカルアカウントとの統合）の考慮が必要
+    *@
     </div>
 </div>
 <footer>
-    <p>&copy; 2025 Example Company. All Rights Reserved.</p>
+    <p>&copy; 2025 shamshikie. All Rights Reserved.</p>
 </footer>
 
 @section Scripts {

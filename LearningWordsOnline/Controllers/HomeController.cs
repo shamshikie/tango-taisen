@@ -1,4 +1,5 @@
 using LearningWordsOnline.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using LearningWordsOnline.ViewModels;
@@ -8,20 +9,34 @@ namespace LearningWordsOnline.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
         {
             _logger = logger;
+            _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
         {
             if (User.Identity is not null && User.Identity.IsAuthenticated)
             {
-                // ƒƒOƒCƒ“‚µ‚Ä‚¢‚éê‡ARank/Index‚ÉƒŠƒ_ƒCƒŒƒNƒg
+                // ãƒ­ã‚°ã‚¤ãƒ³ã—ã¦ã„ã‚‹å ´åˆã€Rank/Indexã¸ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆ
                 return RedirectToAction(nameof(Index), "Rank");
             }
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GuestLogin()
+        {
+            var guest = await _userManager.FindByEmailAsync("guest@wordify.app");
+            if (guest == null) return RedirectToAction(nameof(Index));
+            await _signInManager.SignInAsync(guest, isPersistent: false);
+            return RedirectToAction("Index", "Rank");
         }
 
         public IActionResult Support()
@@ -42,7 +57,7 @@ namespace LearningWordsOnline.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(int? id)
         {
-            //status code‚ªnull‚Ì‚Æ‚«‚Í—\Šú‚µ‚È‚¢ƒGƒ‰[AƒT[ƒo[ƒGƒ‰[‚Æ‚µ‚Äˆ—
+            //status codeãŒnullã®å ´åˆã¯æƒ³å®šå¤–ã®ã‚¨ãƒ©ãƒ¼ã€ã‚µãƒ¼ãƒãƒ¼ã‚¨ãƒ©ãƒ¼ã¨ã—ã¦æ‰±ã†
             if ((id ?? 500) == 404)
             {
                 return View("Error404");

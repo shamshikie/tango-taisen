@@ -70,10 +70,6 @@ namespace LearningWordsOnline.Controllers
         [Route("api/GetRankAlphabet/{rankPoints}")]
         public IActionResult GetRankAlphabet(int rankPoints)
         {
-            if (rankPoints == 0)
-            {
-                return NotFound(new { message = $"rankPoints is invalid" });
-            }
             string rankAlphabet = RankHelper.GetRank(rankPoints);
             return Content(rankAlphabet, "text/plain");
         }

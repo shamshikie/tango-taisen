@@ -2,7 +2,7 @@
 
 import * as Quiz from './quiz.js';
 
-const questionData = JSON.parse(document.getElementById('questions-container').dataset.questions);
+const questionData = JSON.parse(document.getElementById('questions-container').textContent);
 const timeLimitData = document.getElementById('settings-data').dataset.timer;
 /*let countdown;*/
 

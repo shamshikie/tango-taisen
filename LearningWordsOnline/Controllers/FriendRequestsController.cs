@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace LearningWordsOnline.Controllers
 {
     [Authorize]
+    [IgnoreAntiforgeryToken] // 全アクションが[FromBody]のJSONエンドポイントのため
     public class FriendRequestsController : Controller
     {
         private readonly LearningWordsOnlineDbContext _appContext;
@@ -44,7 +45,6 @@ namespace LearningWordsOnline.Controllers
         /// <returns></returns>
         /// <exception cref="NullReferenceException"></exception>
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromBody] string requestedUsername)
         {
             var user = await _appContext.AppUsers

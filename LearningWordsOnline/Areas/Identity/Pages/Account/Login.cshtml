@@ -39,50 +39,29 @@
                     </div>
 
                     <div class="text-center">
+                        @* TODO: SendGrid等でメール送信を実装したら有効化する
+                           現状はメール送信未設定のためパスワードリセット・確認メールが機能しない
                         <p><a id="forgot-password" asp-page="./ForgotPassword" class="text-decoration-none">パスワードを忘れた場合</a></p>
+                        *@
                         <hr />
                         <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" id="register-btn" class="w-100 btn btn-lg btn-outline-brand">
                             新規登録
                         </a>
+                        @* TODO: 同上
                         <p class="mt-3"><a id="resend-confirmation" asp-page="./ResendEmailConfirmation" class="text-decoration-none">確認メールを再送信</a></p>
+                        *@
                     </div>
                 </form>
             </section>
         </div>
 
-        <!-- 外部アカウントでのログイン -->
-        <div class="col-md-6">
-            <section class="card shadow p-4">
-                <h3 class="text-center mb-4 text-brand">外部サービスでログイン</h3>
-                <hr />
-                @{
-                    if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                    {
-                        <div>
-                            <p class="text-center">
-                                外部認証サービスが構成されていません。
-                                <a href="https://go.microsoft.com/fwlink/?LinkID=532715">こちらの記事</a>を参照してください。
-                            </p>
-                        </div>
-                    }
-                    else
-                    {
-                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                            @foreach (var provider in Model.ExternalLogins!)
-                            {
-                                <button type="submit" class="btn btn-outline-secondary w-100 mb-2" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
-                                    @provider.DisplayName でログイン
-                                </button>
-                            }
-                        </form>
-                    }
-                }
-            </section>
-        </div>
+        @* TODO: GitHub OAuthログインを実装する
+           メール重複（ローカルアカウントとの統合）の考慮が必要
+        *@
     </div>
 </div>
 <footer>
-    <p>&copy; 2025 Example Company. All Rights Reserved.</p>
+    <p>&copy; 2025 shamshikie. All Rights Reserved.</p>
 </footer>
 <style>
 </style>
