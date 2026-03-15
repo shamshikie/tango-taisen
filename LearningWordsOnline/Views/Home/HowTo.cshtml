@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "How to play";
     ViewData["ShowMenuBar"] = true;
+    ViewData["ShowFooter"] = true;
 }
 <style>
 </style>
@@ -37,7 +38,7 @@
         background-color: #ffe6e0;
     }
 </style>
-<div class="container mt-4 mb-5">
+<div class="container mt-4 mb-5 pb-5">
     <div class="text-center mb-4">
         <h1 class="page-title">@ViewData["Title"]</h1>
     </div>
@@ -264,8 +265,5 @@
     </div>
 </div>
 
-<footer>
-    <p>&copy; 2025 Example Company. All Rights Reserved.</p>
-</footer>
 
 <link rel="stylesheet" href="~/css/mainPage.css" asp-append-version="true" />

@@ -2,6 +2,7 @@
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
+    ViewData["ShowFooter"] = true;
 }
 
 <div class="container py-5">
@@ -50,9 +51,6 @@
     *@
     </div>
 </div>
-<footer>
-    <p>&copy; 2025 shamshikie. All Rights Reserved.</p>
-</footer>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
