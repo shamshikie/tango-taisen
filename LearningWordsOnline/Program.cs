@@ -17,17 +17,17 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddErrorDescriber<JapaneseIdentityErrorDescriber>(); // �J�X�^���G���[���b�Z�[�W��K�p
+    .AddErrorDescriber<JapaneseIdentityErrorDescriber>(); // カスタムエラーメッセージを適用
 builder.Services.AddSignalR();
 builder.Services.AddScoped<IAppUserService, AppUserService>();
 builder.Services.AddScoped<IQuizService, QuizService>();
-// �Z�b�V�����ŗ��p����L���b�V���T�[�r�X��o�^
+// セッションで利用するキャッシュサービスを登録
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options => {
     const int timeoutSeconds = 2;
-    //Training�y�[�W�݂̂ŃZ�b�V�������g�p
+    // Trainingページのみでセッションを使用
     options.Cookie.Path = "/Training";
-    options.IdleTimeout = TimeSpan.FromSeconds(timeoutSeconds); //�Z�b�V�����̃^�C���A�E�g����
+    options.IdleTimeout = TimeSpan.FromSeconds(timeoutSeconds); // セッションのタイムアウト設定
     options.Cookie.IsEssential = false;
     options.Cookie.HttpOnly = true;
     options.Cookie.SameSite = SameSiteMode.Strict;
@@ -60,16 +60,16 @@ if (app.Environment.IsDevelopment()) {
 }
 
 app.UseHttpsRedirection();
-// ���݂��Ȃ��y�[�W�ɃA�N�Z�X
+// 存在しないページにアクセスした場合のエラーページ設定
 app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
 
 app.UseStaticFiles();
 
-// �Z�L�����e�B�w�b�_�[�̃|���V�[���`
+// セキュリティヘッダーのポリシー設定
 var policy = new HeaderPolicyCollection()
     .AddDefaultSecurityHeaders()
     .AddContentSecurityPolicy(builder => {
-        // �f�t�H���g�͎������g�̂݋���
+        // デフォルトは自サイトのみ許可
         builder.AddDefaultSrc().Self();
 
         // Script
@@ -94,7 +94,7 @@ var policy = new HeaderPolicyCollection()
         // Image
         builder.AddImgSrc().Self().Data();
 
-        // �J�����̂� localhost �� http/ws ������
+        // 開発環境でlocalhostからのhttps/ws接続を許可
         if (app.Environment.IsDevelopment()) {
             builder.AddConnectSrc().Self()
                 .From("https://localhost:*")
@@ -109,7 +109,7 @@ var policy = new HeaderPolicyCollection()
                 .From("https://cdnjs.cloudflare.com");
         }
 
-        // ���̑��Z�L�����e�B
+        // その他セキュリティ設定
         builder.AddObjectSrc().None();
         builder.AddFrameAncestors().None();
         builder.AddBaseUri().Self();
@@ -119,16 +119,17 @@ var policy = new HeaderPolicyCollection()
     .AddFrameOptionsDeny()
     .AddXssProtectionBlock()
     .AddReferrerPolicyStrictOriginWhenCrossOrigin()
-    .AddCustomHeader("Cross-Origin-Resource-Policy", "same-origin");
+    .AddCustomHeader("Cross-Origin-Resource-Policy", "same-origin")
+    .AddCustomHeader("Cross-Origin-Embedder-Policy", "unsafe-none");
 
 app.UseSecurityHeaders(policy);
 
 app.UseRouting();
 
 app.UseAuthorization();
-// SessionMiddleware��o�^
+// SessionMiddlewareを登録
 app.UseSession();
-// �ŏI���O�C���̋L�^ �i���N�G�X�g����Ԃ��тɊm�F
+// 最終ログインの記録（リクエストごとに確認）
 app.UseMiddleware<LastLoginMiddleware>();
 
 app.MapControllerRoute(

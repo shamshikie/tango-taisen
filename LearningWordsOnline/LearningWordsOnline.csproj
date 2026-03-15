@@ -40,6 +40,7 @@
 	<ItemGroup>
 		<None Include="wwwroot\images\icons\nigaoe_kuuya_syounin_zou.png" />
 		<Content Include="Data\seed_pg.sql">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</Content>
 	</ItemGroup>
