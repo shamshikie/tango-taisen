@@ -23,7 +23,6 @@ namespace LearningWordsOnline.Controllers
         }
 
         [HttpPost("Invite")]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Invite([FromForm] int friendId, [FromForm] string roomId)
         {
             var aspNetUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

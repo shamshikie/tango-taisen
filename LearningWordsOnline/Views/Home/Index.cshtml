@@ -1,9 +1,8 @@
-﻿@{
+@{
     ViewData["Title"] = "Home";
 }
 <style>
     .hero-section {
-        /* background: #96cdca; */
         color: black;
     }
 
@@ -23,7 +22,8 @@
             .hero-section p.small a:hover {
                 border-bottom: 1px solid black;
             }
-    .brand-title{
+
+    .brand-title {
         color: #ff5733;
     }
 
@@ -47,25 +47,35 @@
         object-fit: cover;
     }
 </style>
+
 <div class="hero-section text-center pt-5 mx-2 d-flex flex-column justify-content-center align-items-center">
-    <h1 class="brand-title display-4 fw-bold mb-4">Wordify</h1>
-    <h1 class="display-5 fw-bold mb-4">
-        競って学べる<br />
-        <span class="highlight">対戦型英単語クイズアプリ</span>
-    </h1>
-    <p class="lead mb-4">友達やライバルと楽しく学べる、白熱のクイズバトルを体験しよう！</p>
-    <a class="btn btn-lg fw-bold px-4 mb-3 btn-brand" asp-area="Identity" asp-page="/Account/Register">
-        今すぐプレイ
+    <h1 class="brand-title display-4 fw-bold mb-2">Wordify</h1>
+    <h2 class="display-6 fw-bold mb-1">
+        競って学べる<span class="highlight">対戦型英単語クイズアプリ</span>
+    </h2>
+    <p class="text-muted mb-4">Competitive English Word Battle — Learn While You Fight</p>
+
+    <form asp-action="GuestLogin" asp-controller="Home" method="post" class="mb-2">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-lg fw-bold px-5 btn-brand">
+            ゲストでプレイ <span class="badge bg-light text-dark ms-2" style="font-size:0.7rem;">登録不要</span>
+        </button>
+    </form>
+    <a class="btn btn-lg fw-bold px-4 mb-2 btn-outline-brand" asp-area="Identity" asp-page="/Account/Register">
+        新規登録
     </a>
-    <p class="mt-2">
+    <p class="mt-1">
         アカウントをお持ちの方は
         <a class="text-brand fw-bold" asp-area="Identity" asp-page="/Account/Login">こちら</a>
     </p>
 </div>
+
+<!-- TODO: ゲームプレイのGIF/動画を追加する
+     録画 → GIF変換 → wwwroot/images/demo/ に配置 → 下のカルーセルに差し替え -->
+
 <!-- ゲーム画面のプレビュー -->
-<div id="gameCarousel" class="carousel slide d-flex flex-column justify-content-center align-items-center mt-5 mx-auto mb-5" data-bs-ride="carousel">
-    @* <h2 class="text-center mb-4">デモ画面</h2> *@
-	<div class="carousel-inner rounded-3 shadow-lg bg-light p-4">
+<div id="gameCarousel" class="carousel slide d-flex flex-column justify-content-center align-items-center mt-3 mx-auto mb-5" data-bs-ride="carousel">
+    <div class="carousel-inner rounded-3 shadow-lg bg-light p-4">
         <div class="carousel-item active">
             <img src="~/images/demo/MyWordbook.png" class="d-block w-100" alt="ゲームプレイ画像1">
         </div>
@@ -88,6 +98,7 @@
         </button>
     </div>
 </div>
+
 <footer>
     <p>&copy; 2025 Example Company. All Rights Reserved.</p>
 </footer>

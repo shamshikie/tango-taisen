@@ -114,6 +114,7 @@ namespace LearningWordsOnline.Controllers
         /// </summary>
         /// <param name="results"></param>
         /// <returns></returns>
+        [IgnoreAntiforgeryToken]
         [Route("api/submitTrainingResults")]
         [HttpPost]
         public async Task<IActionResult> SubmitResults([FromBody] List<QuestionResult> results)

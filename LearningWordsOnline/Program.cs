@@ -33,7 +33,8 @@ builder.Services.AddSession(options => {
     options.Cookie.SameSite = SameSiteMode.Strict;
 });
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+    options.Filters.Add(new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute()));
 
 var app = builder.Build();
 
@@ -47,6 +48,17 @@ using (var scope = app.Services.CreateScope()) {
     if (File.Exists(seedPath)) {
         var sql = File.ReadAllText(seedPath);
         db.Database.ExecuteSqlRaw(sql);
+    }
+
+    // ゲストアカウントのseed（存在しない場合のみ作成）
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    var appUserSvc = scope.ServiceProvider.GetRequiredService<IAppUserService>();
+    const string guestEmail = "guest@wordify.app";
+    if (await userManager.FindByEmailAsync(guestEmail) == null) {
+        var guestIdentityUser = new IdentityUser { Email = guestEmail, UserName = guestEmail, EmailConfirmed = true };
+        await userManager.CreateAsync(guestIdentityUser, "Guest1234!");
+        var guestUserId = await userManager.GetUserIdAsync(guestIdentityUser);
+        await appUserSvc.CreateAsync(guestUserId, guestEmail, "guest_user", "ゲスト");
     }
 }
 
