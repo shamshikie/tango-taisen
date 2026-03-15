@@ -39,7 +39,9 @@
 
 	<ItemGroup>
 		<None Include="wwwroot\images\icons\nigaoe_kuuya_syounin_zou.png" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
+		<Content Include="Data\seed_pg.sql">
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>

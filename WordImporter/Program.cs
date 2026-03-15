@@ -25,7 +25,7 @@ namespace WordImporter {
 
             var serviceProvider = new ServiceCollection()
                .AddDbContext<LearningWordsOnlineDbContext>(options =>
-                   options.UseSqlServer(connectionString))
+                   options.UseNpgsql(connectionString))
                .BuildServiceProvider();
 
             string projectDirectory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\.."));

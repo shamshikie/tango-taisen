@@ -38,8 +38,16 @@ builder.Services.AddControllersWithViews();
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope()) {
-    scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.Migrate();
-    scope.ServiceProvider.GetRequiredService<LearningWordsOnlineDbContext>().Database.Migrate();
+    var appDb = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var db = scope.ServiceProvider.GetRequiredService<LearningWordsOnlineDbContext>();
+    appDb.Database.Migrate();
+    db.Database.Migrate();
+
+    var seedPath = Path.Combine(AppContext.BaseDirectory, "Data", "seed_pg.sql");
+    if (File.Exists(seedPath)) {
+        var sql = File.ReadAllText(seedPath);
+        db.Database.ExecuteSqlRaw(sql);
+    }
 }
 
 // Configure the HTTP request pipeline.
