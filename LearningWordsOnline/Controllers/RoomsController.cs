@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Configuration;
 using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
 
 namespace LearningWordsOnline.Controllers
 {

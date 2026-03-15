@@ -3,6 +3,15 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# VSCode
+.vscode/
+
+# Local environment settings (contains secrets)
+appsettings.Development.json
+appsettings.*.json
+!appsettings.json
+!appsettings.example.json
+
 # User-specific files
 *.rsuser
 *.suo
@@ -28,7 +37,10 @@ x86/
 [Aa][Rr][Mm]64/
 bld/
 [Bb]in/
+**/[Bb]in/
+**/bin?*/
 [Oo]bj/
+**/[Oo]bj/
 [Oo]ut/
 [Ll]og/
 [Ll]ogs/

@@ -11,14 +11,12 @@ namespace LearningWordsOnline.Models
 
         [Required]
         [MaxLength(450)]
-        [Column(TypeName = "NVARCHAR(450)")]
         public required string AspNetUserId { get; set; }
 
 
         [Required]
         [EmailAddress]
         [MaxLength(250)]
-        [Column(TypeName = "NVARCHAR(256)")]
         public required string Email { get; set; } = string.Empty;
 
         [Required]

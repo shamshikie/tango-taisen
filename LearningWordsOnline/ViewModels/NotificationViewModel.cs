@@ -1,5 +1,4 @@
 ﻿using LearningWordsOnline.Models;
-using Microsoft.Data.SqlClient;
 
 namespace LearningWordsOnline.ViewModels
 {
